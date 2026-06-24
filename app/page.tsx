@@ -262,6 +262,46 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        {/* 门店地址 */}
+        <section id="contact" className="py-20">
+          <SectionTitle en="Contact" zh="门店地址" />
+          <div className="mx-auto mt-10 max-w-2xl rounded-3xl bg-white/70 p-8 text-center shadow-sm ring-1 ring-[var(--pink-soft)]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="mx-auto h-10 w-10 text-[var(--pink-deep)]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+              />
+            </svg>
+            <p className="mt-4 text-lg font-semibold">
+              广州市天河区华强路 2 号富力盈丰大厦 A 座 3 楼 336 室
+            </p>
+            <p className="mt-2 text-sm text-[var(--foreground)]/70">
+              营业时间：11:00 - 18:00
+            </p>
+            <a
+              href="https://map.baidu.com/search/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%A4%A9%E6%B2%B3%E5%8C%BA%E5%8D%8E%E5%BC%BA%E8%B7%AF2%E5%8F%B7%E5%AF%8C%E5%8A%9B%E7%9B%88%E4%B8%B0%E5%A4%A7%E5%8E%A6A%E5%BA%203%E6%A5%BC336%E5%AE%A4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-block rounded-full bg-[var(--pink-deep)] px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+            >
+              查看地图
+            </a>
+          </div>
+        </section>
       </main>
 
       {/* 页脚 */}
