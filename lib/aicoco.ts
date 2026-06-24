@@ -81,13 +81,20 @@ function getMockResponse(messages: ChatMessage[]): string {
 }
 
 export async function logChat(entry: LogEntry) {
-  let logs: LogEntry[] = [];
   try {
-    const raw = await fs.readFile(LOG_PATH, "utf-8");
-    logs = JSON.parse(raw);
-  } catch {
-    // file does not exist yet or is invalid
+    let logs: LogEntry[] = [];
+    try {
+      const raw = await fs.readFile(LOG_PATH, "utf-8");
+      logs = JSON.parse(raw);
+    } catch {
+      // file does not exist yet or is invalid
+    }
+    logs.push(entry);
+    await fs.writeFile(LOG_PATH, JSON.stringify(logs, null, 2), "utf-8");
+  } catch (err) {
+    // Netlify/serverless runtimes often have read-only filesystems.
+    // Logging should not break the chat experience.
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn("AICOCO log skipped:", message);
   }
-  logs.push(entry);
-  await fs.writeFile(LOG_PATH, JSON.stringify(logs, null, 2), "utf-8");
 }
