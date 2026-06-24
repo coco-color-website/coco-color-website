@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fff8fa;
+  --foreground: #4a3b40;
+
+  /* 品牌色：淡粉为主，藕荷紫 / 薄荷绿为点缀（取自 logo） */
+  --pink: #f7b8c6;
+  --pink-soft: #fde6ec;
+  --pink-deep: #e98aa0;
+  --lavender: #c8c2e6;
+  --mint: #b6dcc0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-pink: var(--pink);
+  --color-pink-soft: var(--pink-soft);
+  --color-pink-deep: var(--pink-deep);
+  --color-lavender: var(--lavender);
+  --color-mint: var(--mint);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 英文衬线大标题（韩系排版常用） */
+.serif {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.08em;
+}
+
+.scrollable {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pink-deep) var(--pink-soft);
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background: var(--pink-soft);
+  border-radius: 9999px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: var(--pink-deep);
+  border-radius: 9999px;
+}
+
+html {
+  scroll-behavior: smooth;
+}

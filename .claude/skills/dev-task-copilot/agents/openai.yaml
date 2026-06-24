@@ -1,0 +1,4 @@
+interface:
+  display_name: "Neo Beginner Dev Copilot"
+  short_description: "命中新手开发场景时，把想法、Bug、部署和 Roadmap 落成小步可用闭环。"
+  default_prompt: "Use $dev-task-copilot whenever this is a development task, even if the user did not name the Skill. Turn the task into a lightweight spec or staged roadmap when needed, then ship the next small working loop with simple stack choices, light confirmations, agent-owned troubleshooting, verification, safe deployment habits, and local savepoints."

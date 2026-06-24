@@ -1,0 +1,4 @@
+interface:
+  display_name: "Link Reader"
+  short_description: "把支持的中文内容链接整理成干净的本地 Markdown。"
+  default_prompt: "使用 $link-reader 读取这个链接，并把整理后的 Markdown 保存到本地。"

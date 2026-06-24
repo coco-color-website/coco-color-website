@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeChat Article Archiver"
+  short_description: "Extract WeChat articles into local Markdown."
+  default_prompt: "Use $wechat-article-archiver to archive this WeChat article as Markdown."
