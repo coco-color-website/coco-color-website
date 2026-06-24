@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getContent } from "@/lib/content";
 
 const navItems = [
   { href: "#brand", label: "品牌介绍" },
@@ -8,86 +9,6 @@ const navItems = [
   { href: "#ask", label: "AICOCO 答疑" },
   { href: "#test", label: "线上诊断" },
   { href: "#reviews", label: "评论区" },
-];
-
-const detailGroups = [
-  {
-    en: "BASIC",
-    zh: "基础色彩诊断",
-    items: [
-      "讲解色彩诊断知识",
-      "肤色测量仪诊断肤色",
-      "服装色彩诊断【经典八季型定基调】",
-      "首饰适配材质诊断",
-      "适配发色推荐",
-      "现有化妆包筛查 + 适配彩妆推荐",
-      "实体纸质诊断报告 / 随身购物参考色卡 / PDF 电子存档报告",
-    ],
-  },
-  {
-    en: "PLUS",
-    zh: "进阶色彩诊断",
-    items: [
-      "讲解十二季型与十六季型色彩理论",
-      "在经典八季型基础上深入冷暖、明度、纯度三维分析",
-      "定位个人专属季型，避免简单「春/夏/秋/冬」一刀切",
-      "服装用色范围与禁区色明确标注",
-      "眼影、腮红、唇色适配推荐",
-      "日常通勤妆与约会/聚会场合妆容区分设计",
-      "个人色彩与衣橱单品匹配建议",
-      "适配发色与挑染方案建议",
-      "首饰材质与配色进阶搭配",
-      "季节性衣橱胶囊搭配思路",
-      "电子诊断报告 + 随身参考色卡",
-      "诊断后 7 日线上答疑跟进",
-    ],
-  },
-  {
-    en: "ADVANCED",
-    zh: "高阶色彩诊断",
-    items: [
-      "讲解色彩诊断知识",
-      "肤色测量仪诊断肤色",
-      "二十一季型色彩定位诊断",
-      "骨骼体型诊断",
-      "服装色彩诊断",
-      "首饰适配材质诊断",
-      "适配发色推荐",
-      "现有化妆包筛查 + 适配彩妆推荐",
-      "美瞳颜色推荐",
-      "美甲颜色推荐",
-      "纹绣颜色推荐",
-      "医美项目推荐",
-      "个人形象设计报告",
-      "永久线上答疑",
-    ],
-  },
-  {
-    en: "BODY",
-    zh: "骨骼体型诊断",
-    items: [
-      "骨骼、肌肉、脂肪三维度体型分析",
-      "判断直线型 / 曲线型 / 自然型骨架",
-      "肩、背、腰、臀线条比例测量",
-      "适合的面料、廓形、图案推荐",
-      "H 型 / A 型 / X 型 / O 型外套适配",
-      "领型、袖型、裤型适配建议",
-      "裙长、腰线与视觉比例平衡法则",
-      "鞋包配饰与体型平衡建议",
-      "腰臀比优化与显瘦穿搭策略",
-      "日常穿搭避雷指南",
-      "配饰点位：项链、耳环、腰带建议",
-      "四季必备单品购物清单",
-      "整体形象设计方案 PDF 报告",
-    ],
-  },
-];
-
-const services = [
-  { en: "BASIC", zh: "基础色彩测试", desc: "经典八季型定基调，快速了解自身适配色。" },
-  { en: "PLUS", zh: "进阶色彩测试", desc: "在八季型基础上细分，色彩判断更精准。" },
-  { en: "ADVANCED", zh: "高阶色彩测试", desc: "二十一季型深度诊断，全维度色彩适配。" },
-  { en: "BODY", zh: "骨骼体型诊断", desc: "分析骨骼与体型，定制整体形象设计方案。" },
 ];
 
 const process = [
@@ -120,7 +41,9 @@ function SectionTitle({ en, zh }: { en: string; zh: string }) {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const content = await getContent();
+
   return (
     <div className="flex flex-col">
       {/* 顶部导航 */}
@@ -129,9 +52,9 @@ export default function Home() {
           <a href="#top" className="flex items-center gap-2.5">
             <Image src="/logo-icon.png" alt="Coco Color" width={48} height={48} />
             <span className="flex flex-col leading-tight">
-              <span className="font-semibold tracking-wide">Coco Color</span>
+              <span className="font-semibold tracking-wide">{content.brand.title}</span>
               <span className="text-[11px] text-[var(--foreground)]/60">
-                色彩诊断 · 整体形象设计
+                {content.brand.subtitle}
               </span>
             </span>
           </a>
@@ -161,11 +84,10 @@ export default function Home() {
             priority
           />
           <p className="mt-6 text-lg tracking-[0.3em] text-[var(--pink-deep)]">
-            色彩诊断 · 整体形象设计
+            {content.brand.subtitle}
           </p>
           <p className="mt-6 max-w-xl text-[var(--foreground)]/75">
-            韩国一站式全套形象诊断体系，用专业的色彩科学，
-            找到最适合你的颜色、妆容与风格。
+            {content.brand.heroText}
           </p>
           <a
             href="#projects"
@@ -182,7 +104,7 @@ export default function Home() {
           <SectionTitle en="Brand" zh="品牌介绍" />
           <div className="mx-auto mt-10 max-w-3xl space-y-5 text-center leading-relaxed text-[var(--foreground)]/80">
             <p>
-              Coco Color 专注色彩诊断与整体形象设计，提供从肤色诊断、服装色彩、
+              {content.brand.title} 专注色彩诊断与整体形象设计，提供从肤色诊断、服装色彩、
               妆容配饰到购物顾问的一站式服务。
             </p>
             <p>
@@ -214,24 +136,22 @@ export default function Home() {
             <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl shadow-sm ring-1 ring-[var(--pink-soft)]">
               <Image
                 src="/coco.jpg"
-                alt="主理人 COCO 老师"
+                alt={`主理人 ${content.teacher.name} 老师`}
                 width={600}
                 height={750}
                 className="h-full w-full object-cover"
               />
             </div>
             <div className="space-y-4">
-              <p className="serif text-2xl text-[var(--pink-deep)]">COCO</p>
+              <p className="serif text-2xl text-[var(--pink-deep)]">{content.teacher.name}</p>
               <p className="text-sm tracking-widest text-[var(--foreground)]/60">
-                主理人 · 资深形象顾问
+                {content.teacher.role}
               </p>
-              <p className="leading-relaxed text-[var(--foreground)]/80">
-                COCO 老师拥有韩国系统的形象设计训练背景，累计完成数千例色彩与
-                形象诊断，擅长结合东方肤色特点，给出真正可落地的色彩与造型建议。
-              </p>
-              <p className="leading-relaxed text-[var(--foreground)]/80">
-                每一位顾客都由老师现场亲自诊断，确保结果精准、贴合个人气质。
-              </p>
+              {content.teacher.bio.map((p, i) => (
+                <p key={i} className="leading-relaxed text-[var(--foreground)]/80">
+                  {p}
+                </p>
+              ))}
             </div>
           </div>
         </section>
@@ -244,7 +164,7 @@ export default function Home() {
           </p>
           <div className="mx-auto mt-5 max-w-2xl">
             <div className="h-[360px] snap-y snap-mandatory space-y-5 overflow-y-auto rounded-3xl pr-2">
-              {services.map((s, i) => (
+              {content.services.map((s, i) => (
                 <div
                   key={s.en}
                   className={`snap-start rounded-3xl p-8 shadow-sm ${
@@ -269,7 +189,7 @@ export default function Home() {
             ↕ 列表内上下滑动查看完整明细
           </p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {detailGroups.map((g, idx) => (
+            {content.details.map((g, idx) => (
               <div
                 key={g.en}
                 className={`flex h-[420px] flex-col rounded-3xl p-6 shadow-sm ${
@@ -348,7 +268,7 @@ export default function Home() {
       <footer className="mt-10 border-t border-[var(--pink-soft)] bg-[var(--pink-soft)]/40">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-5 py-12 text-center">
           <Image src="/logo-icon.png" alt="Coco Color" width={48} height={48} />
-          <p className="font-semibold tracking-wide">Coco Color · 色彩诊断 · 整体形象设计</p>
+          <p className="font-semibold tracking-wide">{content.brand.title} · {content.brand.subtitle}</p>
           <p className="text-sm text-[var(--foreground)]/60">
             预约请通过线上沟通 · 现场到店诊断
           </p>
