@@ -287,7 +287,7 @@ export default async function Home() {
               />
             </svg>
             <p className="mt-4 text-lg font-semibold">
-              广州市天河区华强路 2 号富力盈丰大厦 A 座 3 楼 336 室
+              广州市天河区 华强路2号 富力盈丰大厦A座 3楼336室
             </p>
             <p className="mt-2 text-sm text-[var(--foreground)]/70">
               营业时间：11:00 - 18:00
