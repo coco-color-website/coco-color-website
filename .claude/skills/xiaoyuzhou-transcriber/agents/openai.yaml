@@ -1,4 +1,0 @@
-interface:
-  display_name: "Xiaoyuzhou Transcriber"
-  short_description: "把小宇宙单集转写并整理成可读的 Markdown。"
-  default_prompt: "使用 $xiaoyuzhou-transcriber 把这个小宇宙单集转写成 Markdown。"

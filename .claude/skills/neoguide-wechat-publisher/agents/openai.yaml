@@ -1,4 +1,0 @@
-interface:
-  display_name: "NeoGuide WeChat Publisher"
-  short_description: "Generate local cover assets, format Markdown with Neo warm WeChat styling, and create draft-box articles."
-  default_prompt: "Use $neoguide-wechat-publisher to generate a no-text local cover image, format this Markdown article, preview it, and create a WeChat Official Account draft."

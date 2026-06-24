@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# neo guide / local claude skills
+/.claude/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
