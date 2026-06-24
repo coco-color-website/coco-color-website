@@ -222,10 +222,19 @@ export default async function Home() {
         <section id="ask" className="py-20">
           <SectionTitle en="AICOCO" zh="AICOCO 答疑" />
           <p className="mx-auto mt-6 max-w-xl text-center text-[var(--foreground)]/70">
-            未来你可以在这里向 AICOCO 提问任何关于色彩、穿搭与妆容的问题，
-            获得即时解答。
+            向 AICOCO 提问任何关于色彩、穿搭与妆容的问题，获得即时解答。
           </p>
-          <ComingSoon note="AI 答疑功能将在下一阶段上线" />
+          <div className="mx-auto mt-8 max-w-md rounded-3xl bg-white/70 p-8 text-center shadow-sm ring-1 ring-[var(--pink-soft)]">
+            <p className="text-sm text-[var(--foreground)]/70">
+              色彩诊断 · 四季型 · 韩妆风格 · 穿搭配色
+            </p>
+            <a
+              href="/aicoco"
+              className="mt-5 inline-block rounded-full bg-[var(--pink-deep)] px-8 py-3 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+            >
+              开始提问
+            </a>
+          </div>
         </section>
 
         {/* 线上色彩诊断 */}

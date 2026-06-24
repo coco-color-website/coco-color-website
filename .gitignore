@@ -39,6 +39,9 @@ yarn-error.log*
 # neo guide / local claude skills
 /.claude/
 
+# runtime data
+data/aicoco-log.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
