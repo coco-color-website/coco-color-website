@@ -131,28 +131,40 @@ export default async function Home() {
 
         {/* 诊断老师 */}
         <section id="teacher" className="py-20">
-          <SectionTitle en="Stylist" zh="诊断老师" />
-          <div className="mt-12 grid items-center gap-10 md:grid-cols-2">
-            <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl shadow-sm ring-1 ring-[var(--pink-soft)]">
-              <Image
-                src="/coco.jpg"
-                alt={`主理人 ${content.teacher.name} 老师`}
-                width={600}
-                height={750}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="space-y-4">
-              <p className="serif text-2xl text-[var(--pink-deep)]">{content.teacher.name}</p>
-              <p className="text-sm tracking-widest text-[var(--foreground)]/60">
-                {content.teacher.role}
-              </p>
-              {content.teacher.bio.map((p, i) => (
-                <p key={i} className="leading-relaxed text-[var(--foreground)]/80">
-                  {p}
-                </p>
-              ))}
-            </div>
+          <SectionTitle en="Stylists" zh="诊断老师" />
+          <div className="mt-12 space-y-16">
+            {content.teachers.map((teacher) => (
+              <div
+                key={teacher.name}
+                className="grid items-center gap-10 md:grid-cols-2"
+              >
+                <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl shadow-sm ring-1 ring-[var(--pink-soft)]">
+                  <Image
+                    src={teacher.image}
+                    alt={`${teacher.name} 老师`}
+                    width={600}
+                    height={750}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <p className="serif text-2xl text-[var(--pink-deep)]">
+                    {teacher.name}
+                  </p>
+                  <p className="text-sm tracking-widest text-[var(--foreground)]/60">
+                    {teacher.role}
+                  </p>
+                  {teacher.bio.map((p, i) => (
+                    <p
+                      key={i}
+                      className="leading-relaxed text-[var(--foreground)]/80"
+                    >
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

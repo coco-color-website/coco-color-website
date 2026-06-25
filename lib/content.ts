@@ -7,11 +7,12 @@ export interface SiteContent {
     subtitle: string;
     heroText: string;
   };
-  teacher: {
+  teachers: Array<{
     name: string;
     role: string;
+    image: string;
     bio: string[];
-  };
+  }>;
   services: Array<{ en: string; zh: string; desc: string; price: number }>;
   details: Array<{ en: string; zh: string; items: string[] }>;
 }

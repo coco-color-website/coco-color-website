@@ -15,24 +15,27 @@ interface DetailGroup {
   items: string[];
 }
 
+interface Teacher {
+  name: string;
+  role: string;
+  image: string;
+  bio: string[];
+}
+
 interface SiteContent {
   brand: {
     title: string;
     subtitle: string;
     heroText: string;
   };
-  teacher: {
-    name: string;
-    role: string;
-    bio: string[];
-  };
+  teachers: Teacher[];
   services: Service[];
   details: DetailGroup[];
 }
 
 const emptyContent: SiteContent = {
   brand: { title: "", subtitle: "", heroText: "" },
-  teacher: { name: "", role: "", bio: ["", ""] },
+  teachers: [{ name: "", role: "", image: "", bio: [""] }],
   services: [],
   details: [],
 };
@@ -113,15 +116,25 @@ export default function AdminPage() {
     setContent((c) => ({ ...c, brand: { ...c.brand, [field]: value } }));
   }
 
-  function updateTeacher(field: keyof SiteContent["teacher"], value: string) {
-    setContent((c) => ({ ...c, teacher: { ...c.teacher, [field]: value } }));
+  function updateTeacher(
+    index: number,
+    field: keyof Teacher,
+    value: string
+  ) {
+    setContent((c) => {
+      const teachers = [...c.teachers];
+      teachers[index] = { ...teachers[index], [field]: value };
+      return { ...c, teachers };
+    });
   }
 
-  function updateTeacherBio(index: number, value: string) {
+  function updateTeacherBio(teacherIndex: number, bioIndex: number, value: string) {
     setContent((c) => {
-      const bio = [...c.teacher.bio];
-      bio[index] = value;
-      return { ...c, teacher: { ...c.teacher, bio } };
+      const teachers = [...c.teachers];
+      const bio = [...teachers[teacherIndex].bio];
+      bio[bioIndex] = value;
+      teachers[teacherIndex] = { ...teachers[teacherIndex], bio };
+      return { ...c, teachers };
     });
   }
 
@@ -237,34 +250,47 @@ export default function AdminPage() {
             {/* 老师介绍 */}
             <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-[var(--pink-soft)]">
               <h2 className="mb-4 font-semibold">诊断老师</h2>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm">名字</label>
-                    <input
-                      value={content.teacher.name}
-                      onChange={(e) => updateTeacher("name", e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm">头衔</label>
-                    <input
-                      value={content.teacher.role}
-                      onChange={(e) => updateTeacher("role", e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
-                    />
-                  </div>
-                </div>
-                {content.teacher.bio.map((text, i) => (
-                  <div key={i}>
-                    <label className="text-sm">介绍段落 {i + 1}</label>
-                    <textarea
-                      value={text}
-                      onChange={(e) => updateTeacherBio(i, e.target.value)}
-                      rows={3}
-                      className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
-                    />
+              <div className="space-y-6">
+                {content.teachers.map((teacher, ti) => (
+                  <div key={ti} className="rounded-xl bg-[var(--pink-soft)]/30 p-4">
+                    <p className="mb-3 text-sm font-medium">老师 {ti + 1}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs">名字</label>
+                        <input
+                          value={teacher.name}
+                          onChange={(e) => updateTeacher(ti, "name", e.target.value)}
+                          className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs">头衔</label>
+                        <input
+                          value={teacher.role}
+                          onChange={(e) => updateTeacher(ti, "role", e.target.value)}
+                          className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <label className="text-xs">照片路径</label>
+                      <input
+                        value={teacher.image}
+                        onChange={(e) => updateTeacher(ti, "image", e.target.value)}
+                        className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                      />
+                    </div>
+                    {teacher.bio.map((text, i) => (
+                      <div key={i} className="mt-3">
+                        <label className="text-xs">介绍段落 {i + 1}</label>
+                        <textarea
+                          value={text}
+                          onChange={(e) => updateTeacherBio(ti, i, e.target.value)}
+                          rows={3}
+                          className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                        />
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
