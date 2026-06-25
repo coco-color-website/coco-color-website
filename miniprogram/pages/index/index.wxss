@@ -71,6 +71,109 @@
   margin-top: 56rpx;
 }
 
+/* 预约按钮（hero 内的按钮组 + 客服按钮） */
+.hero-btns {
+  margin-top: 56rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24rpx;
+}
+.hero-btns .btn-primary {
+  margin-top: 0;
+}
+/* 重置小程序 button 默认样式 */
+.btn-book,
+.book-btn,
+.fab-book {
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+  border: none;
+  background: transparent;
+}
+.btn-book::after,
+.book-btn::after,
+.fab-book::after {
+  border: none;
+}
+.btn-book {
+  padding: 22rpx 56rpx;
+  border-radius: 999rpx;
+  background: #fff;
+  color: var(--pink-deep);
+  font-size: 28rpx;
+  font-weight: 500;
+  border: 1rpx solid var(--pink);
+  box-shadow: 0 4rpx 16rpx rgba(233, 138, 160, 0.15);
+}
+
+/* 预约咨询区块 */
+.book-card {
+  margin-top: 56rpx;
+  padding: 56rpx 44rpx;
+  text-align: center;
+}
+.book-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--pink-deep);
+}
+.book-desc {
+  margin-top: 20rpx;
+  font-size: 27rpx;
+  line-height: 1.7;
+  color: rgba(74, 59, 64, 0.75);
+}
+.book-btn {
+  display: block;
+  margin: 32rpx auto 0;
+  width: 78%;
+  padding: 26rpx 0;
+  border-radius: 999rpx;
+  background: var(--pink-deep);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 6rpx 18rpx rgba(233, 138, 160, 0.3);
+}
+.book-btn-ghost {
+  background: #fff;
+  color: var(--pink-deep);
+  border: 1rpx solid var(--pink);
+  box-shadow: none;
+}
+.book-tip {
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: rgba(74, 59, 64, 0.5);
+}
+
+/* 悬浮预约按钮 */
+.fab-book {
+  position: fixed;
+  right: 30rpx;
+  bottom: 60rpx;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: var(--pink-deep);
+  color: #fff;
+  font-size: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(233, 138, 160, 0.45);
+}
+.fab-icon {
+  font-size: 30rpx;
+  line-height: 1;
+  margin-bottom: 4rpx;
+}
+
 /* 区块 */
 .section {
   padding: 80rpx 40rpx;

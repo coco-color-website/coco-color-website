@@ -105,6 +105,8 @@ const content = {
   contact: {
     address: "广州市天河区 华强路2号 富力盈丰大厦A座 3楼336室",
     hours: "营业时间：11:00 - 18:00",
+    phone: "18696690085",
+    wechat: "cococolorgz",
     latitude: 23.13,
     longitude: 113.32
   }
@@ -145,6 +147,38 @@ Page({
       name: "Coco Color 色彩诊断",
       address: content.contact.address,
       scale: 16
+    });
+  },
+
+  // 拨打门店电话
+  callPhone() {
+    wx.makePhoneCall({ phoneNumber: content.contact.phone });
+  },
+
+  // 复制微信号
+  copyWechat() {
+    wx.setClipboardData({
+      data: content.contact.wechat,
+      success() {
+        wx.showModal({
+          title: "微信号已复制",
+          content: "微信号 " + content.contact.wechat + " 已复制，请到微信「添加朋友」粘贴添加预约。",
+          showCancel: false,
+          confirmText: "好的"
+        });
+      }
+    });
+  },
+
+  // 预约方式选择面板（悬浮按钮 / 顶部按钮）
+  contactSheet() {
+    const phone = content.contact.phone;
+    wx.showActionSheet({
+      itemList: ["拨打电话 " + phone, "复制微信号 " + content.contact.wechat],
+      success: (res) => {
+        if (res.tapIndex === 0) this.callPhone();
+        else if (res.tapIndex === 1) this.copyWechat();
+      }
     });
   }
 });

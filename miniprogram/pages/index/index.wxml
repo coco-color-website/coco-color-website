@@ -5,7 +5,10 @@
     <image class="hero-logo" src="/assets/logo-icon.png" mode="aspectFit" />
     <view class="hero-subtitle">{{brand.subtitle}}</view>
     <view class="hero-text">{{brand.heroText}}</view>
-    <view class="btn-primary" bindtap="scrollToProjects">了解诊断项目</view>
+    <view class="hero-btns">
+      <view class="btn-primary" bindtap="scrollToProjects">了解诊断项目</view>
+      <view class="btn-book" bindtap="contactSheet">预约咨询</view>
+    </view>
   </view>
 
   <!-- 品牌介绍 -->
@@ -96,6 +99,22 @@
     </view>
   </view>
 
+  <!-- 预约咨询 -->
+  <view class="section" id="book">
+    <view class="section-title">
+      <view class="serif title-en">Booking</view>
+      <view class="title-zh">预约咨询</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="card book-card">
+      <view class="book-title">想找老师做色彩诊断？</view>
+      <view class="book-desc">电话或微信咨询，了解适合你的项目并预约到店时间。</view>
+      <view class="book-btn" bindtap="callPhone">📞 拨打电话 {{contact.phone}}</view>
+      <view class="book-btn book-btn-ghost" bindtap="copyWechat">复制微信号 {{contact.wechat}}</view>
+      <view class="book-tip">营业时间 11:00 - 18:00 · 现场一对一诊断</view>
+    </view>
+  </view>
+
   <!-- 门店地址 -->
   <view class="section" id="contact">
     <view class="section-title">
@@ -119,6 +138,12 @@
     <view class="footer-title">{{brand.title}} · {{brand.subtitle}}</view>
     <view class="footer-note">预约请通过线上沟通 · 现场到店诊断</view>
     <view class="footer-copy">© 2026 Coco Color Studio</view>
+  </view>
+
+  <!-- 悬浮预约按钮 -->
+  <view class="fab-book" bindtap="contactSheet">
+    <text class="fab-icon">✦</text>
+    <text>预约</text>
   </view>
 
 </view>
