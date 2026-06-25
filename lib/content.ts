@@ -23,66 +23,17 @@ const REPO = process.env.GITHUB_REPO || "coco-color-website";
 const TOKEN = process.env.GITHUB_TOKEN;
 const FILE_PATH = "data/content.json";
 
-const NETLIFY_TOKEN = process.env.NETLIFY_TOKEN;
-const NETLIFY_SITE_ID = process.env.NETLIFY_SITE_ID;
-
 function isLocalDev() {
   return process.env.NODE_ENV === "development";
 }
 
-async function triggerNetlifyDeploy() {
-  if (!NETLIFY_TOKEN || !NETLIFY_SITE_ID) {
-    console.warn("Netlify deploy skipped: token or site id missing");
-    return;
-  }
-
-  try {
-    const res = await fetch(
-      `https://api.netlify.com/api/v1/sites/${NETLIFY_SITE_ID}/deploys`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${NETLIFY_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!res.ok) {
-      console.error("Netlify deploy trigger failed:", await res.text());
-    } else {
-      console.log("Netlify deploy triggered");
-    }
-  } catch (err) {
-    console.error("Netlify deploy trigger error:", err);
-  }
-}
-
+/**
+ * 直接读取仓库里的 data/content.json。
+ * 本地开发和线上构建都走同一个文件，保证代码和内容始终同步部署。
+ */
 export async function getContent(): Promise<SiteContent> {
-  if (isLocalDev()) {
-    const raw = await fs.readFile(CONTENT_PATH, "utf-8");
-    return JSON.parse(raw) as SiteContent;
-  }
-
-  const res = await fetch(
-    `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`,
-    {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${TOKEN}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      next: { revalidate: 0 },
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error(`GitHub API GET failed: ${res.status} ${await res.text()}`);
-  }
-
-  const data = await res.json();
-  const decoded = Buffer.from(data.content, "base64").toString("utf-8");
-  return JSON.parse(decoded) as SiteContent;
+  const raw = await fs.readFile(CONTENT_PATH, "utf-8");
+  return JSON.parse(raw) as SiteContent;
 }
 
 export async function saveContent(content: SiteContent, message?: string) {
@@ -91,6 +42,12 @@ export async function saveContent(content: SiteContent, message?: string) {
   if (isLocalDev()) {
     await fs.writeFile(CONTENT_PATH, json, "utf-8");
     return { sha: "local" };
+  }
+
+  // 生产环境通过 GitHub API 提交内容更新
+  // 提交到 main 后会自动触发 Netlify 重新部署
+  if (!TOKEN) {
+    throw new Error("GITHUB_TOKEN not set");
   }
 
   // 先获取当前文件的 sha
@@ -133,9 +90,6 @@ export async function saveContent(content: SiteContent, message?: string) {
   if (!putRes.ok) {
     throw new Error(`GitHub API PUT failed: ${putRes.status} ${await putRes.text()}`);
   }
-
-  // 保存成功后触发 Netlify 重新部署
-  await triggerNetlifyDeploy();
 
   return await putRes.json();
 }
