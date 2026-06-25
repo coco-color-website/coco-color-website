@@ -1,0 +1,27 @@
+page {
+  /* 品牌色：淡粉为主，藕荷紫 / 薄荷绿为点缀（取自 logo） */
+  --background: #fff8fa;
+  --foreground: #4a3b40;
+  --pink: #f7b8c6;
+  --pink-soft: #fde6ec;
+  --pink-deep: #e98aa0;
+  --lavender: #c8c2e6;
+  --mint: #b6dcc0;
+
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 英文衬线大标题（韩系排版常用） */
+.serif {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.08em;
+}
+
+.muted {
+  color: rgba(74, 59, 64, 0.7);
+}
+.muted-light {
+  color: rgba(74, 59, 64, 0.5);
+}

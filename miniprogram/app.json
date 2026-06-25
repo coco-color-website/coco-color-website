@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "Coco Color 色彩诊断",
+    "navigationBarBackgroundColor": "#fde6ec",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#fff8fa",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

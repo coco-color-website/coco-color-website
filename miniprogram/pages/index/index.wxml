@@ -1,0 +1,124 @@
+<view class="page">
+
+  <!-- Hero -->
+  <view class="hero">
+    <image class="hero-logo" src="/assets/logo-icon.png" mode="aspectFit" />
+    <view class="hero-subtitle">{{brand.subtitle}}</view>
+    <view class="hero-text">{{brand.heroText}}</view>
+    <view class="btn-primary" bindtap="scrollToProjects">了解诊断项目</view>
+  </view>
+
+  <!-- 品牌介绍 -->
+  <view class="section" id="brand">
+    <view class="section-title">
+      <view class="serif title-en">Brand</view>
+      <view class="title-zh">品牌介绍</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="brand-intro">
+      <view>{{brand.title}} 专注色彩诊断与整体形象设计，提供从肤色诊断、服装色彩、妆容配饰到购物顾问的一站式服务。</view>
+      <view class="mt-12">我们坚持自然光诊断环境与进口诊断工具精准测肤，让每一次诊断都有可对照、可带走、可长期参考的结果。</view>
+    </view>
+    <view class="feature-grid">
+      <view class="card feature-card" wx:for="{{features}}" wx:key="t">
+        <view class="feature-t">{{item.t}}</view>
+        <view class="feature-d">{{item.d}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 诊断老师 -->
+  <view class="section" id="teacher">
+    <view class="section-title">
+      <view class="serif title-en">Stylist</view>
+      <view class="title-zh">诊断老师</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="teacher-photo-wrap">
+      <image class="teacher-photo" src="/assets/coco.jpg" mode="aspectFill" />
+    </view>
+    <view class="teacher-name serif">{{teacher.name}}</view>
+    <view class="teacher-role">{{teacher.role}}</view>
+    <view class="teacher-bio" wx:for="{{teacher.bio}}" wx:key="*this">{{item}}</view>
+  </view>
+
+  <!-- 诊断项目 -->
+  <view class="section" id="projects">
+    <view class="section-title">
+      <view class="serif title-en">Service</view>
+      <view class="title-zh">诊断项目</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="service-list">
+      <view class="card service-card {{index % 2 === 1 ? 'card-accent' : ''}}" wx:for="{{services}}" wx:key="en">
+        <view class="serif service-en">{{item.en}}</view>
+        <view class="service-zh">{{item.zh}}</view>
+        <view class="service-desc">{{item.desc}}</view>
+        <view class="service-price">¥{{item.price}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 诊断明细 -->
+  <view class="section" id="details">
+    <view class="section-title">
+      <view class="serif title-en">Details</view>
+      <view class="title-zh">诊断明细</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="detail-list">
+      <view class="card detail-card {{index % 2 === 1 ? 'card-accent' : ''}}" wx:for="{{details}}" wx:key="en" wx:for-item="g">
+        <view class="serif detail-en">{{g.en}}</view>
+        <view class="detail-zh">{{g.zh}}</view>
+        <view class="detail-items">
+          <view class="detail-item" wx:for="{{g.items}}" wx:key="*this" wx:for-item="it" wx:for-index="i">
+            <text class="detail-num">{{i + 1 < 10 ? '0' : ''}}{{i + 1}}</text>
+            <text class="detail-text">{{it}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预约流程 -->
+  <view class="section">
+    <view class="section-title">
+      <view class="serif title-en">Process</view>
+      <view class="title-zh">预约流程</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="feature-grid">
+      <view class="card process-card" wx:for="{{process}}" wx:key="step">
+        <view class="serif process-step">{{item.step}}</view>
+        <view class="process-title">{{item.title}}</view>
+        <view class="process-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 门店地址 -->
+  <view class="section" id="contact">
+    <view class="section-title">
+      <view class="serif title-en">Contact</view>
+      <view class="title-zh">门店地址</view>
+      <view class="title-line"></view>
+    </view>
+    <view class="card contact-card">
+      <view class="contact-address">{{contact.address}}</view>
+      <view class="contact-hours">{{contact.hours}}</view>
+      <view class="contact-btns">
+        <view class="btn-primary" bindtap="openMap">查看地图</view>
+        <view class="btn-ghost" bindtap="copyAddress">复制地址</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 页脚 -->
+  <view class="footer">
+    <image class="footer-logo" src="/assets/logo-icon.png" mode="aspectFit" />
+    <view class="footer-title">{{brand.title}} · {{brand.subtitle}}</view>
+    <view class="footer-note">预约请通过线上沟通 · 现场到店诊断</view>
+    <view class="footer-copy">© 2026 Coco Color Studio</view>
+  </view>
+
+</view>
