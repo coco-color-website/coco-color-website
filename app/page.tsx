@@ -154,14 +154,19 @@ export default async function Home() {
                   <p className="text-sm tracking-widest text-[var(--foreground)]/60">
                     {teacher.role}
                   </p>
-                  {teacher.bio.map((p, i) => (
-                    <p
-                      key={i}
-                      className="leading-relaxed text-[var(--foreground)]/80"
-                    >
-                      {p}
-                    </p>
-                  ))}
+                  <ul className="mt-5 space-y-3">
+                    {teacher.bio.map((p, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 rounded-2xl bg-[var(--pink-soft)]/50 p-4 text-sm leading-relaxed text-[var(--foreground)]/80 shadow-sm"
+                      >
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--pink-deep)] text-xs font-semibold text-white">
+                          {i + 1}
+                        </span>
+                        <span>{p}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             ))}
