@@ -12,7 +12,7 @@ export interface SiteContent {
     role: string;
     bio: string[];
   };
-  services: Array<{ en: string; zh: string; desc: string }>;
+  services: Array<{ en: string; zh: string; desc: string; price: number }>;
   details: Array<{ en: string; zh: string; items: string[] }>;
 }
 
