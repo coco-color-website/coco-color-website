@@ -30,6 +30,12 @@ export async function getContent(): Promise<SiteContent> {
   return siteContent as SiteContent;
 }
 
+function base64Encode(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  const binString = Array.from(bytes, (b) => String.fromCharCode(b)).join("");
+  return btoa(binString);
+}
+
 export async function saveContent(content: SiteContent, message?: string) {
   const json = JSON.stringify(content, null, 2);
 
@@ -71,7 +77,7 @@ export async function saveContent(content: SiteContent, message?: string) {
       },
       body: JSON.stringify({
         message: message || "Update site content from admin",
-        content: Buffer.from(json).toString("base64"),
+        content: base64Encode(json),
         sha,
       }),
     }
