@@ -1,5 +1,4 @@
-import { promises as fs } from "fs";
-import path from "path";
+import siteContent from "@/data/content.json";
 
 export interface SiteContent {
   brand: {
@@ -17,36 +16,26 @@ export interface SiteContent {
   details: Array<{ en: string; zh: string; items: string[] }>;
 }
 
-const CONTENT_PATH = path.join(process.cwd(), "data", "content.json");
-
 const OWNER = process.env.GITHUB_OWNER || "coco-color-website";
 const REPO = process.env.GITHUB_REPO || "coco-color-website";
 const TOKEN = process.env.GITHUB_TOKEN;
 const FILE_PATH = "data/content.json";
 
-function isLocalDev() {
-  return process.env.NODE_ENV === "development";
-}
-
 /**
- * 直接读取仓库里的 data/content.json。
+ * 直接导入仓库里的 data/content.json。
  * 本地开发和线上构建都走同一个文件，保证代码和内容始终同步部署。
+ * Edge Runtime 下不能使用 fs，因此改用静态 JSON 导入。
  */
 export async function getContent(): Promise<SiteContent> {
-  const raw = await fs.readFile(CONTENT_PATH, "utf-8");
-  return JSON.parse(raw) as SiteContent;
+  return siteContent as SiteContent;
 }
 
 export async function saveContent(content: SiteContent, message?: string) {
   const json = JSON.stringify(content, null, 2);
 
-  if (isLocalDev()) {
-    await fs.writeFile(CONTENT_PATH, json, "utf-8");
-    return { sha: "local" };
-  }
-
-  // 生产环境通过 GitHub API 提交内容更新
-  // 提交到 main 后会自动触发 Netlify 重新部署
+  // Cloudflare Pages / Edge Runtime 不支持 fs 写文件，
+  // 所有环境（包括本地开发）都通过 GitHub API 提交内容更新。
+  // 提交到 main 后会自动触发 Cloudflare Pages 重新部署。
   if (!TOKEN) {
     throw new Error("GITHUB_TOKEN not set");
   }

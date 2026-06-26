@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getContent, saveContent } from "@/lib/content";
 
+export const runtime = "edge";
+
 function checkAuth(request: Request) {
   const adminPassword = process.env.ADMIN_PASSWORD;
   if (!adminPassword) {

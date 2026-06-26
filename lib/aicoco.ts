@@ -1,5 +1,4 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { supabase } from "./supabase";
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -13,8 +12,6 @@ export interface LogEntry {
   model: string;
   error?: string;
 }
-
-const LOG_PATH = path.join(process.cwd(), "data", "aicoco-log.json");
 
 const SYSTEM_PROMPT = `你是 AICOCO，Coco Color 可可色彩诊断工作室的 AI 助理。你只回答与色彩诊断、四季型、个人色彩、妆容、穿搭、配饰、韩妆风格、预约流程相关的问题。如果用户问到无关话题，请礼貌地引导回色彩诊断相关话题。回答要简洁、友好、专业，控制在 200 字以内。`;
 
@@ -81,20 +78,25 @@ function getMockResponse(messages: ChatMessage[]): string {
 }
 
 export async function logChat(entry: LogEntry) {
-  try {
-    let logs: LogEntry[] = [];
+  // Edge Runtime 不支持 fs 写文件，本地文件备份已移除。
+  // 如需保留本地日志，可改由 Node.js 脚本或 Supabase 实现。
+  if (supabase) {
     try {
-      const raw = await fs.readFile(LOG_PATH, "utf-8");
-      logs = JSON.parse(raw);
-    } catch {
-      // file does not exist yet or is invalid
+      const lastUser =
+        entry.messages.filter((m) => m.role === "user").pop()?.content || "";
+      const { error } = await supabase.from("aicoco_logs").insert({
+        question: lastUser,
+        answer: entry.answer,
+        model: entry.model,
+        error: entry.error || null,
+        messages: entry.messages,
+      });
+      if (error) {
+        console.warn("AICOCO supabase log failed:", error.message);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn("AICOCO supabase log error:", message);
     }
-    logs.push(entry);
-    await fs.writeFile(LOG_PATH, JSON.stringify(logs, null, 2), "utf-8");
-  } catch (err) {
-    // Netlify/serverless runtimes often have read-only filesystems.
-    // Logging should not break the chat experience.
-    const message = err instanceof Error ? err.message : String(err);
-    console.warn("AICOCO log skipped:", message);
   }
 }
