@@ -138,6 +138,24 @@ export default function AdminPage() {
     });
   }
 
+  function addTeacherBioRow(teacherIndex: number) {
+    setContent((c) => {
+      const teachers = [...c.teachers];
+      const bio = [...teachers[teacherIndex].bio, ""];
+      teachers[teacherIndex] = { ...teachers[teacherIndex], bio };
+      return { ...c, teachers };
+    });
+  }
+
+  function removeTeacherBioRow(teacherIndex: number, bioIndex: number) {
+    setContent((c) => {
+      const teachers = [...c.teachers];
+      const bio = teachers[teacherIndex].bio.filter((_, i) => i !== bioIndex);
+      teachers[teacherIndex] = { ...teachers[teacherIndex], bio };
+      return { ...c, teachers };
+    });
+  }
+
   function updateService(index: number, field: keyof Service, value: string) {
     setContent((c) => {
       const services = [...c.services];
@@ -282,15 +300,31 @@ export default function AdminPage() {
                     </div>
                     {teacher.bio.map((text, i) => (
                       <div key={i} className="mt-3">
-                        <label className="text-xs">介绍段落 {i + 1}</label>
+                        <div className="mb-1 flex items-center justify-between">
+                          <label className="text-xs">介绍段落 {i + 1}</label>
+                          <button
+                            type="button"
+                            onClick={() => removeTeacherBioRow(ti, i)}
+                            className="text-xs text-red-500 hover:text-red-600"
+                          >
+                            删除此行
+                          </button>
+                        </div>
                         <textarea
                           value={text}
                           onChange={(e) => updateTeacherBio(ti, i, e.target.value)}
                           rows={3}
-                          className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                          className="w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
                         />
                       </div>
                     ))}
+                    <button
+                      type="button"
+                      onClick={() => addTeacherBioRow(ti)}
+                      className="mt-3 w-full rounded-lg border border-dashed border-[var(--pink-deep)] py-2 text-sm text-[var(--pink-deep)] transition hover:bg-[var(--pink-soft)]/30"
+                    >
+                      + 添加介绍段落
+                    </button>
                   </div>
                 ))}
               </div>
