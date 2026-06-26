@@ -26,6 +26,6 @@
     "playwright": "^1.61.1",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vercel": "^54.17.3"
+    "vercel": "^47.0.4"
   }
 }
