@@ -19,10 +19,10 @@ const content = {
     { t: "终身答疑", d: "诊断后持续线上跟进答疑" }
   ],
   services: [
-    { en: "BASIC", zh: "基础色彩测试", desc: "经典八季型定基调，快速了解自身适配色。", price: 599 },
-    { en: "PLUS", zh: "进阶色彩测试", desc: "在八季型基础上细分，色彩判断更精准。", price: 998 },
-    { en: "ADVANCED", zh: "高阶色彩测试", desc: "二十一季型深度诊断，全维度色彩适配。", price: 1298 },
-    { en: "BODY", zh: "骨骼体型诊断", desc: "分析骨骼与体型，定制整体形象设计方案。", price: 1398 }
+    { en: "BASIC", zh: "基础色彩测试", desc: "经典八季型定基调，快速了解自身适配色。", price: { COCO: 699, 乐飞: 599 } },
+    { en: "PLUS", zh: "进阶色彩测试", desc: "在八季型基础上细分，色彩判断更精准。", price: { COCO: 899, 乐飞: 799 } },
+    { en: "ADVANCED", zh: "高阶色彩测试", desc: "二十一季型深度诊断，全维度色彩适配。", price: { COCO: 998 } },
+    { en: "BODY", zh: "骨骼体型诊断", desc: "分析骨骼与体型，定制整体形象设计方案。", price: { COCO: 1098 } }
   ],
   details: [
     {

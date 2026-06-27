@@ -6,7 +6,7 @@ interface Service {
   en: string;
   zh: string;
   desc: string;
-  price: number;
+  price: Record<string, number>;
 }
 
 interface DetailGroup {
@@ -156,13 +156,25 @@ export default function AdminPage() {
     });
   }
 
-  function updateService(index: number, field: keyof Service, value: string) {
+  function updateService(index: number, field: keyof Omit<Service, "price">, value: string) {
     setContent((c) => {
       const services = [...c.services];
-      services[index] = {
-        ...services[index],
-        [field]: field === "price" ? Number(value) || 0 : value,
-      };
+      services[index] = { ...services[index], [field]: value };
+      return { ...c, services };
+    });
+  }
+
+  function updateServicePrice(index: number, teacher: string, value: string) {
+    setContent((c) => {
+      const services = [...c.services];
+      const price = { ...services[index].price };
+      const num = Number(value);
+      if (value === "" || Number.isNaN(num) || num <= 0) {
+        delete price[teacher];
+      } else {
+        price[teacher] = num;
+      }
+      services[index] = { ...services[index], price };
       return { ...c, services };
     });
   }
@@ -362,14 +374,18 @@ export default function AdminPage() {
                         className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
                       />
                     </div>
-                    <div className="mt-3">
-                      <label className="text-xs">价格（元）</label>
-                      <input
-                        type="number"
-                        value={s.price}
-                        onChange={(e) => updateService(i, "price", e.target.value)}
-                        className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
-                      />
+                    <div className="mt-3 grid grid-cols-2 gap-4">
+                      {content.teachers.map((teacher) => (
+                        <div key={teacher.name}>
+                          <label className="text-xs">{teacher.name} 价格（元）</label>
+                          <input
+                            type="number"
+                            value={s.price[teacher.name] ?? ""}
+                            onChange={(e) => updateServicePrice(i, teacher.name, e.target.value)}
+                            className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}

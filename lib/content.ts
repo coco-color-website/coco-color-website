@@ -12,7 +12,7 @@ export interface SiteContent {
     image: string;
     bio: string[];
   }>;
-  services: Array<{ en: string; zh: string; desc: string; price: number }>;
+  services: Array<{ en: string; zh: string; desc: string; price: Record<string, number> }>;
   details: Array<{ en: string; zh: string; items: string[] }>;
 }
 
