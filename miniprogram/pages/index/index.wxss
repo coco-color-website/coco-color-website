@@ -299,6 +299,11 @@
   font-size: 27rpx;
   color: rgba(74, 59, 64, 0.7);
 }
+.service-duration {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: rgba(74, 59, 64, 0.6);
+}
 .service-price {
   margin-top: 24rpx;
   font-size: 36rpx;

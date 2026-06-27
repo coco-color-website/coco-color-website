@@ -6,6 +6,7 @@ interface Service {
   en: string;
   zh: string;
   desc: string;
+  duration: string;
   price: Record<string, number>;
 }
 
@@ -373,6 +374,16 @@ export default function AdminPage() {
                         onChange={(e) => updateService(i, "desc", e.target.value)}
                         className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
                       />
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs">时长</label>
+                        <input
+                          value={s.duration}
+                          onChange={(e) => updateService(i, "duration", e.target.value)}
+                          className="mt-1 w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 outline-none focus:border-[var(--pink-deep)]"
+                        />
+                      </div>
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-4">
                       {content.teachers.map((teacher) => (

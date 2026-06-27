@@ -60,6 +60,7 @@
         <view class="serif service-en">{{item.en}}</view>
         <view class="service-zh">{{item.zh}}</view>
         <view class="service-desc">{{item.desc}}</view>
+        <view class="service-duration">时长：{{item.duration}}</view>
         <view class="service-price">COCO ¥{{item.price.COCO}}</view>
       </view>
     </view>
@@ -71,6 +72,7 @@
         <view class="serif service-en">{{item.en}}</view>
         <view class="service-zh">{{item.zh}}</view>
         <view class="service-desc">{{item.desc}}</view>
+        <view class="service-duration">时长：{{item.duration}}</view>
         <view class="service-price">乐飞 ¥{{item.price.乐飞}}</view>
       </view>
     </view>

@@ -200,7 +200,10 @@ export default async function Home() {
                     <p className="serif text-xl text-[var(--pink-deep)]">{s.en}</p>
                     <p className="mt-1 text-lg font-semibold">{s.zh}</p>
                     <p className="mt-3 text-sm text-[var(--foreground)]/70">{s.desc}</p>
-                    <p className="mt-4 text-lg font-semibold text-[var(--pink-deep)]">
+                    <p className="mt-2 text-xs text-[var(--foreground)]/60">
+                      时长：{s.duration}
+                    </p>
+                    <p className="mt-3 text-lg font-semibold text-[var(--pink-deep)]">
                       ¥{s.price.COCO}
                     </p>
                   </div>
@@ -231,7 +234,10 @@ export default async function Home() {
                     <p className="serif text-xl text-[var(--pink-deep)]">{s.en}</p>
                     <p className="mt-1 text-lg font-semibold">{s.zh}</p>
                     <p className="mt-3 text-sm text-[var(--foreground)]/70">{s.desc}</p>
-                    <p className="mt-4 text-lg font-semibold text-[var(--pink-deep)]">
+                    <p className="mt-2 text-xs text-[var(--foreground)]/60">
+                      时长：{s.duration}
+                    </p>
+                    <p className="mt-3 text-lg font-semibold text-[var(--pink-deep)]">
                       ¥{s.price.乐飞}
                     </p>
                   </div>
