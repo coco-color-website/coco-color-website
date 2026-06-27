@@ -52,17 +52,26 @@
       <view class="title-zh">诊断项目</view>
       <view class="title-line"></view>
     </view>
+
+    <!-- COCO 主理人 -->
+    <view class="teacher-label">COCO 主理人</view>
     <view class="service-list">
-      <view class="card service-card {{index % 2 === 1 ? 'card-accent' : ''}}" wx:for="{{services}}" wx:key="en">
+      <view class="card service-card {{index % 2 === 1 ? 'card-accent' : ''}}" wx:for="{{cocoServices}}" wx:key="en">
         <view class="serif service-en">{{item.en}}</view>
         <view class="service-zh">{{item.zh}}</view>
         <view class="service-desc">{{item.desc}}</view>
-        <view class="service-price">
-          <text>COCO ¥{{item.price.COCO}}</text>
-          <block wx:if="{{item.price.乐飞}}">
-            <text> / 乐飞 ¥{{item.price.乐飞}}</text>
-          </block>
-        </view>
+        <view class="service-price">COCO ¥{{item.price.COCO}}</view>
+      </view>
+    </view>
+
+    <!-- S级诊断师 乐飞 -->
+    <view class="teacher-label">S级诊断师 乐飞</view>
+    <view class="service-list">
+      <view class="card service-card {{index % 2 === 1 ? 'card-accent' : ''}}" wx:for="{{lefeiServices}}" wx:key="en">
+        <view class="serif service-en">{{item.en}}</view>
+        <view class="service-zh">{{item.zh}}</view>
+        <view class="service-desc">{{item.desc}}</view>
+        <view class="service-price">乐飞 ¥{{item.price.乐飞}}</view>
       </view>
     </view>
   </view>

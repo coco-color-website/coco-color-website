@@ -267,6 +267,14 @@
   color: rgba(74, 59, 64, 0.8);
 }
 
+.teacher-label {
+  margin-top: 48rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--pink-deep);
+}
+
 /* 诊断项目 */
 .service-list {
   margin-top: 48rpx;

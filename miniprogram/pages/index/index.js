@@ -20,9 +20,10 @@ const content = {
   ],
   services: [
     { en: "BASIC", zh: "基础色彩测试", desc: "经典八季型定基调，快速了解自身适配色。", price: { COCO: 699, 乐飞: 599 } },
-    { en: "PLUS", zh: "进阶色彩测试", desc: "在八季型基础上细分，色彩判断更精准。", price: { COCO: 899, 乐飞: 799 } },
-    { en: "ADVANCED", zh: "高阶色彩测试", desc: "二十一季型深度诊断，全维度色彩适配。", price: { COCO: 998 } },
-    { en: "BODY", zh: "骨骼体型诊断", desc: "分析骨骼与体型，定制整体形象设计方案。", price: { COCO: 1098 } }
+    { en: "PLUS", zh: "进阶色彩测试", desc: "在八季型基础上细分，色彩判断更精准。", price: { COCO: 998, 乐飞: 799 } },
+    { en: "ADVANCED", zh: "高阶色彩测试", desc: "二十一季型深度诊断，全维度色彩适配。", price: { COCO: 1098 } },
+    { en: "BODY", zh: "骨骼体型诊断", desc: "分析骨骼与体型，定制整体形象设计方案。", price: { COCO: 1098 } },
+    { en: "WEDDING", zh: "婚礼诊断", desc: "将色彩诊断、骨骼体型诊断与婚礼场景美学结合，为新娘定制专属婚礼形象方案。", price: { COCO: 1098 } }
   ],
   details: [
     {
@@ -94,6 +95,31 @@ const content = {
         "四季必备单品购物清单",
         "整体形象设计方案 PDF 报告"
       ]
+    },
+    {
+      en: "WEDDING",
+      zh: "婚礼诊断",
+      items: [
+        "新娘整体形象定制 · 全维度诊断服务",
+        "婚前礼服诊断",
+        "晨袍色彩版型诊断",
+        "中式秀禾色彩版型诊断",
+        "晚宴敬酒服专属选型方案",
+        "主婚纱精细化专业诊断",
+        "身形适配婚纱廓形分析",
+        "个人色彩适配婚纱颜色分析",
+        "婚纱面料及质感诊断",
+        "婚纱领型建议",
+        "婚纱袖型建议",
+        "婚纱刺绣钉珠装饰适配诊断",
+        "婚纱版型剪裁避坑要点解析",
+        "婚礼场景造型配套设计",
+        "头纱、发饰成套搭配规划",
+        "婚礼场地、灯光适配美学方案",
+        "手捧花色系与婚纱配色指导",
+        "婚纱照拍摄风格精准定位",
+        "适配五官的妆容 + 发型全套设计"
+      ]
     }
   ],
   process: [
@@ -113,7 +139,11 @@ const content = {
 };
 
 Page({
-  data: content,
+  data: {
+    ...content,
+    cocoServices: content.services.filter((s) => s.price.COCO),
+    lefeiServices: content.services.filter((s) => s.price.乐飞),
+  },
 
   // 滚动到「诊断项目」区域
   scrollToProjects() {
