@@ -7,7 +7,6 @@ const navItems = [
   { href: "#projects", label: "诊断项目" },
   { href: "#details", label: "诊断明细" },
   { href: "#ask", label: "AICOCO 答疑" },
-  { href: "#test", label: "线上诊断" },
   { href: "#reviews", label: "评论区" },
 ];
 
@@ -299,15 +298,6 @@ export default async function Home() {
               开始提问
             </a>
           </div>
-        </section>
-
-        {/* 线上色彩诊断 */}
-        <section id="test" className="py-20">
-          <SectionTitle en="Online Test" zh="线上色彩诊断" />
-          <p className="mx-auto mt-6 max-w-xl text-center text-[var(--foreground)]/70">
-            上传一张自然光下的素颜照，AI 将为你初步分析季型与适配色彩。
-          </p>
-          <ComingSoon note="线上诊断功能将在后续阶段上线" />
         </section>
 
         {/* 评论区 */}
