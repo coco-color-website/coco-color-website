@@ -190,6 +190,36 @@ export default function AdminPage() {
     });
   }
 
+  function addDetailItem(gIndex: number) {
+    setContent((c) => {
+      const details = [...c.details];
+      const items = [...details[gIndex].items, ""];
+      details[gIndex] = { ...details[gIndex], items };
+      return { ...c, details };
+    });
+  }
+
+  function removeDetailItem(gIndex: number, iIndex: number) {
+    setContent((c) => {
+      const details = [...c.details];
+      const items = details[gIndex].items.filter((_, i) => i !== iIndex);
+      details[gIndex] = { ...details[gIndex], items };
+      return { ...c, details };
+    });
+  }
+
+  function moveDetailItem(gIndex: number, iIndex: number, direction: -1 | 1) {
+    setContent((c) => {
+      const details = [...c.details];
+      const items = [...details[gIndex].items];
+      const target = iIndex + direction;
+      if (target < 0 || target >= items.length) return c;
+      [items[iIndex], items[target]] = [items[target], items[iIndex]];
+      details[gIndex] = { ...details[gIndex], items };
+      return { ...c, details };
+    });
+  }
+
   if (!loggedIn) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--background)] px-5">
@@ -412,14 +442,48 @@ export default function AdminPage() {
                     <p className="font-medium">{g.zh}（{g.en}）</p>
                     <div className="mt-3 space-y-2">
                       {g.items.map((item, ii) => (
-                        <input
-                          key={ii}
-                          value={item}
-                          onChange={(e) => updateDetailItem(gi, ii, e.target.value)}
-                          className="w-full rounded-lg border border-[var(--pink-soft)] px-3 py-2 text-sm outline-none focus:border-[var(--pink-deep)]"
-                        />
+                        <div key={ii} className="flex items-center gap-2">
+                          <input
+                            value={item}
+                            onChange={(e) => updateDetailItem(gi, ii, e.target.value)}
+                            className="flex-1 rounded-lg border border-[var(--pink-soft)] px-3 py-2 text-sm outline-none focus:border-[var(--pink-deep)]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => moveDetailItem(gi, ii, -1)}
+                            disabled={ii === 0}
+                            title="上移"
+                            className="rounded-lg border border-[var(--pink-soft)] px-2 py-2 text-sm text-[var(--pink-deep)] transition hover:bg-[var(--pink-soft)]/40 disabled:opacity-30"
+                          >
+                            ↑
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => moveDetailItem(gi, ii, 1)}
+                            disabled={ii === g.items.length - 1}
+                            title="下移"
+                            className="rounded-lg border border-[var(--pink-soft)] px-2 py-2 text-sm text-[var(--pink-deep)] transition hover:bg-[var(--pink-soft)]/40 disabled:opacity-30"
+                          >
+                            ↓
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeDetailItem(gi, ii)}
+                            title="删除此条"
+                            className="rounded-lg border border-red-200 px-2 py-2 text-sm text-red-500 transition hover:bg-red-50"
+                          >
+                            删除
+                          </button>
+                        </div>
                       ))}
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => addDetailItem(gi)}
+                      className="mt-3 w-full rounded-lg border border-dashed border-[var(--pink-deep)] py-2 text-sm text-[var(--pink-deep)] transition hover:bg-[var(--pink-soft)]/30"
+                    >
+                      + 添加一条明细
+                    </button>
                   </div>
                 ))}
               </div>
