@@ -31,11 +31,17 @@ const SYSTEM_PROMPT = `${buildKnowledgePrompt()}
 export async function callLLM(
   messages: ChatMessage[]
 ): Promise<{ content: string; model: string }> {
-  const apiKey = process.env.LLM_API_KEY;
+  const apiKey = (process.env.LLM_API_KEY || "").trim();
   const baseUrl = process.env.LLM_API_BASE || "https://api.deepseek.com/v1";
   const model = process.env.LLM_MODEL || "deepseek-chat";
 
-  if (!apiKey || apiKey === "your_llm_api_key_here") {
+  const isPlaceholder =
+    !apiKey ||
+    apiKey === "your_llm_api_key_here" ||
+    apiKey.startsWith("your_") ||
+    apiKey.startsWith("sk-placeholder");
+
+  if (isPlaceholder) {
     return { content: getKnowledgeMockResponse(messages), model: "mock" };
   }
 
