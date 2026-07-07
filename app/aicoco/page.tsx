@@ -4,7 +4,7 @@ import AicocoChat from "@/app/components/aicoco-chat";
 export const metadata: Metadata = {
   title: "AICOCO 答疑 · Coco Color",
   description:
-    "向 AICOCO 提问色彩诊断、四季型、妆容穿搭相关问题，获取即时解答。",
+    "向 AICOCO 提问色彩诊断、四季型、骨骼体型、妆容穿搭相关问题，获取即时解答。",
 };
 
 export default function AicocoPage() {
@@ -28,7 +28,7 @@ export default function AicocoPage() {
             Ask AICOCO
           </h1>
           <p className="mt-3 text-[var(--foreground)]/70">
-            色彩诊断、四季型、韩妆风格、穿搭配色的智能问答助手
+            色彩诊断、四季型、骨骼体型、韩妆风格、穿搭配色的智能问答助手
           </p>
         </div>
 

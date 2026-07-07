@@ -12,7 +12,7 @@ export default function AicocoChat() {
     {
       role: "assistant",
       content:
-        "你好！我是 AICOCO，Coco Color 的 AI 小助手。我可以帮你初步了解色彩诊断、四季型、韩妆风格、穿搭配色和预约流程。",
+        "你好！我是 AICOCO，Coco Color 的 AI 小助手。我可以根据 Coco 的专业课程体系，帮你解答色彩诊断（四季型/八季型）、骨骼体型诊断、脸型体型、妆容、穿搭、配饰相关问题。告诉我你的季型或骨骼类型，我会给出更针对性的建议。",
     },
   ]);
   const [input, setInput] = useState("");
