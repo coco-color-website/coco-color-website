@@ -6,6 +6,9 @@ const navItems = [
   { href: "#teacher", label: "诊断老师" },
   { href: "#projects", label: "诊断项目" },
   { href: "#details", label: "诊断明细" },
+  { href: "/studio", label: "诊断环境" },
+  { href: "/coco", label: "主理人介绍" },
+  { href: "/videos", label: "诊断视频" },
   { href: "#ask", label: "AICOCO 答疑" },
   { href: "#reviews", label: "评论区" },
 ];
@@ -126,6 +129,16 @@ export default async function Home() {
               </div>
             ))}
           </div>
+
+          <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-3xl bg-white/70 p-2 shadow-sm ring-1 ring-[var(--pink-soft)]">
+            <Image
+              src="/brand/color-system-banner.jpg"
+              alt="韩国原装进口色布 × 21型中性色体系"
+              width={1200}
+              height={800}
+              className="w-full rounded-2xl object-cover"
+            />
+          </div>
         </section>
 
         {/* 诊断老师 */}
@@ -135,7 +148,7 @@ export default async function Home() {
             {content.teachers.map((teacher) => (
               <div
                 key={teacher.name}
-                className="grid items-center gap-10 md:grid-cols-2"
+                className="grid items-start gap-10 md:grid-cols-2"
               >
                 <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl shadow-sm ring-1 ring-[var(--pink-soft)]">
                   <Image
@@ -166,6 +179,40 @@ export default async function Home() {
                       </li>
                     ))}
                   </ul>
+
+                  {teacher.name === "COCO" && (
+                    <div className="mt-8 space-y-5 rounded-3xl bg-white/70 p-5 shadow-sm ring-1 ring-[var(--pink-soft)]">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-semibold text-[var(--pink-deep)]">
+                          主理人介绍
+                        </p>
+                        <span className="rounded-full bg-[var(--pink-soft)] px-2.5 py-1 text-[10px] font-medium text-[var(--pink-deep)]">
+                          点击查看完整履历
+                        </span>
+                      </div>
+                      <p className="text-sm leading-relaxed text-[var(--foreground)]/75">
+                        从韩国郑瑄茉化妆学院到高奢品牌御用造型顾问，COCO 把一线学习与实战经验，
+                        化作每一次精准、可落地的形象诊断。
+                      </p>
+                      <a href="/coco" className="block overflow-hidden rounded-2xl transition hover:opacity-90">
+                        <Image
+                          src="/brand/coco-credentials-banner.jpg"
+                          alt="资深明星色彩诊断导师 COCO"
+                          width={1200}
+                          height={800}
+                          className="w-full rounded-2xl object-cover"
+                        />
+                      </a>
+                      <div className="text-center">
+                        <a
+                          href="/coco"
+                          className="inline-block rounded-full bg-[var(--pink-deep)] px-8 py-3 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+                        >
+                          了解更多主理人介绍 →
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -278,6 +325,42 @@ export default async function Home() {
                 </ul>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* 诊断环境 */}
+        <section id="studio" className="py-20">
+          <SectionTitle en="Studio" zh="诊断环境" />
+          <p className="mx-auto mt-6 max-w-2xl text-center text-[var(--foreground)]/70">
+            自然光诊断空间、进口诊断工具与专业彩妆试色区，为每一次诊断提供可对照、可带走、可长期参考的结果。
+          </p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-3">
+            {[
+              { src: "/studio/studio-wide-1.jpg", alt: "诊断工作室全景" },
+              { src: "/studio/color-swatches-1.jpg", alt: "色彩诊断专用色布" },
+              { src: "/studio/makeup-vanity.jpg", alt: "专业化妆台" },
+            ].map((img) => (
+              <div
+                key={img.src}
+                className="overflow-hidden rounded-3xl bg-white/70 p-2 shadow-sm ring-1 ring-[var(--pink-soft)]"
+              >
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  width={400}
+                  height={300}
+                  className="aspect-[4/3] w-full rounded-2xl object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <a
+              href="/studio"
+              className="inline-block rounded-full bg-[var(--pink-deep)] px-8 py-3 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+            >
+              查看完整环境
+            </a>
           </div>
         </section>
 
