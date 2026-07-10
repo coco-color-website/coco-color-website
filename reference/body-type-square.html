@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>骨骼体型诊断 · 方形头图</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+    :root {
+      --bg: #fff8fa;
+      --bg-soft: #fde6ec;
+      --pink: #f7b8c6;
+      --pink-deep: #e98aa0;
+      --lavender: #c8c2e6;
+      --mint: #b6dcc0;
+      --text: #4a3b40;
+      --text-light: #7a626a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1080px;
+      background: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 60%, #fceef2 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 64px 70px 52px;
+    }
+
+    /* 装饰圆 */
+    .canvas::before {
+      content: '';
+      position: absolute;
+      top: -180px;
+      right: -120px;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247,184,198,0.32) 0%, rgba(253,230,236,0) 70%);
+    }
+    .canvas::after {
+      content: '';
+      position: absolute;
+      bottom: -160px;
+      left: -100px;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,194,230,0.22) 0%, rgba(255,248,250,0) 70%);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--pink-deep);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 24px;
+      border-radius: 999px;
+      width: fit-content;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 20px rgba(233,138,160,0.25);
+      position: relative;
+      z-index: 2;
+    }
+    .tag svg { width: 18px; height: 18px; }
+
+    h1 {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 78px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .en {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 24px;
+      letter-spacing: 0.22em;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      margin-top: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .types {
+      margin-top: 22px;
+      font-size: 26px;
+      color: var(--text-light);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .features {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
+    .feature {
+      background: rgba(255,255,255,0.78);
+      border: 1.5px solid var(--pink);
+      color: var(--text);
+      font-size: 18px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .figures {
+      margin-top: 42px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 56px;
+      position: relative;
+      z-index: 2;
+      flex: 1;
+    }
+
+    .figure-card {
+      text-align: center;
+    }
+
+    .figure-card svg {
+      width: 180px;
+      height: 340px;
+      filter: drop-shadow(0 14px 28px rgba(74,59,64,0.08));
+    }
+
+    .figure-label {
+      margin-top: 18px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 26px;
+      letter-spacing: 0.12em;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .figure-label span {
+      display: block;
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 18px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .bottom {
+      margin-top: 42px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--pink-deep);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-family: Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .brand-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .brand-text span {
+      display: block;
+      font-size: 15px;
+      color: var(--text-light);
+      font-weight: 400;
+      margin-top: 3px;
+    }
+
+    .price-badge {
+      background: rgba(255,255,255,0.92);
+      border: 2px solid var(--pink-deep);
+      border-radius: 20px;
+      padding: 16px 32px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(233,138,160,0.18);
+    }
+    .price-badge .from { font-size: 15px; color: var(--text-light); }
+    .price-badge .price { font-size: 38px; font-weight: 700; color: var(--pink-deep); }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="tag">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+      到店体验
+    </div>
+
+    <h1>骨骼体型诊断</h1>
+    <p class="en">Body Type Diagnosis</p>
+    <p class="types">直线型 · 曲线型 · 自然型</p>
+
+    <div class="features">
+      <span class="feature">骨骼 / 肌肉 / 脂肪三维度</span>
+      <span class="feature">专属穿搭方案</span>
+      <span class="feature">PDF 形象报告</span>
+    </div>
+
+    <div class="figures">
+      <!-- Straight 直线型 -->
+      <div class="figure-card">
+        <svg viewBox="0 0 180 340" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="90" cy="48" rx="30" ry="34" fill="#f4d6de" />
+          <path d="M42 92 Q90 76 138 92 L124 158 Q90 148 56 158 Z" fill="#e98aa0" opacity="0.85" />
+          <path d="M56 158 L58 274 L122 274 L124 158 Q90 148 56 158" fill="#f7b6c5" opacity="0.9" />
+          <path d="M64 274 L62 328 L86 328 L88 274" fill="#f4d6de" />
+          <path d="M94 274 L96 328 L120 328 L118 274" fill="#f4d6de" />
+          <line x1="42" y1="92" x2="138" y2="92" stroke="#4a3b40" stroke-width="2" stroke-dasharray="5 4" opacity="0.5" />
+          <line x1="90" y1="84" x2="90" y2="274" stroke="#4a3b40" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35" />
+        </svg>
+        <div class="figure-label">Straight<span>直线型</span></div>
+      </div>
+
+      <!-- Wave 曲线型 -->
+      <div class="figure-card">
+        <svg viewBox="0 0 180 340" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="90" cy="50" rx="28" ry="32" fill="#f4d6de" />
+          <path d="M48 94 Q90 84 132 94 L120 154 Q90 168 60 154 Z" fill="#c8c2e6" opacity="0.9" />
+          <path d="M60 154 L72 186 L54 272 L126 272 L108 186 L120 154 Q90 168 60 154" fill="#e98aa0" opacity="0.85" />
+          <path d="M64 272 L62 326 L86 326 L88 272" fill="#f4d6de" />
+          <path d="M94 272 L96 326 L120 326 L118 272" fill="#f4d6de" />
+          <path d="M48 94 Q90 130 132 94" fill="none" stroke="#4a3b40" stroke-width="2" stroke-dasharray="5 4" opacity="0.5" />
+          <path d="M54 272 Q90 300 126 272" fill="none" stroke="#4a3b40" stroke-width="2" stroke-dasharray="5 4" opacity="0.5" />
+        </svg>
+        <div class="figure-label">Wave<span>曲线型</span></div>
+      </div>
+
+      <!-- Natural 自然型 -->
+      <div class="figure-card">
+        <svg viewBox="0 0 180 340" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="90" cy="46" rx="29" ry="33" fill="#f4d6de" />
+          <path d="M38 90 L142 90 L130 152 L50 152 Z" fill="#b6dcc0" opacity="0.85" />
+          <path d="M50 152 L56 276 L124 276 L130 152" fill="#f7b6c5" opacity="0.9" />
+          <path d="M64 276 L62 332 L86 332 L88 276" fill="#f4d6de" />
+          <path d="M94 276 L96 332 L120 332 L118 276" fill="#f4d6de" />
+          <line x1="38" y1="90" x2="142" y2="90" stroke="#4a3b40" stroke-width="2" stroke-dasharray="5 4" opacity="0.5" />
+          <line x1="90" y1="82" x2="90" y2="276" stroke="#4a3b40" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35" />
+        </svg>
+        <div class="figure-label">Natural<span>自然型</span></div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="brand">
+        <div class="brand-logo">CC</div>
+        <div class="brand-text">
+          Coco Color
+          <span>色彩诊断 · 整体形象设计</span>
+        </div>
+      </div>
+
+      <div class="price-badge">
+        <div class="from">体验价</div>
+        <div class="price">¥1298</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

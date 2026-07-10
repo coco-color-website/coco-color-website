@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coco Color 服务介绍</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+    :root {
+      --pink: #f7b8c6;
+      --pink-soft: #fde6ec;
+      --pink-deep: #e98aa0;
+      --foreground: #4a3b40;
+      --background: #fff8fa;
+    }
+
+    .reveal {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: var(--foreground);
+      background: var(--background);
+    }
+
+    .reveal h1, .reveal h2, .reveal h3 {
+      font-family: 'Noto Serif SC', Georgia, serif;
+      color: var(--pink-deep);
+      text-transform: none;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .reveal h1 { font-size: 2.2em; }
+    .reveal h2 { font-size: 1.6em; margin-bottom: 0.6em; }
+    .reveal h3 { font-size: 1.2em; color: var(--foreground); }
+
+    .reveal p, .reveal li {
+      font-size: 0.75em;
+      line-height: 1.7;
+      color: var(--foreground);
+    }
+
+    .reveal ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto;
+      max-width: 720px;
+    }
+
+    .reveal li {
+      padding: 0.4em 0;
+      border-bottom: 1px dashed var(--pink-soft);
+    }
+
+    .reveal li:last-child { border-bottom: none; }
+
+    .reveal section {
+      padding: 2em;
+    }
+
+    .cover {
+      background: linear-gradient(135deg, var(--pink-soft) 0%, var(--background) 100%);
+    }
+
+    .cover h1 {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+    }
+
+    .cover .subtitle {
+      font-size: 1.1em;
+      color: var(--pink-deep);
+      letter-spacing: 0.3em;
+      margin-top: 0.5em;
+    }
+
+    .cover .tagline {
+      margin-top: 2em;
+      font-size: 0.8em;
+      color: var(--foreground);
+      opacity: 0.8;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--pink-deep);
+      color: white;
+      padding: 0.3em 1em;
+      border-radius: 9999px;
+      font-size: 0.55em;
+      margin-bottom: 1em;
+    }
+
+    .price-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.2em;
+      margin: 0.5em;
+      box-shadow: 0 4px 20px rgba(233, 138, 160, 0.12);
+      border: 1px solid var(--pink-soft);
+      text-align: left;
+    }
+
+    .price-card h3 {
+      margin: 0 0 0.3em;
+      font-size: 0.9em;
+    }
+
+    .price-card .desc {
+      font-size: 0.55em;
+      color: var(--foreground);
+      opacity: 0.7;
+      margin-bottom: 0.6em;
+    }
+
+    .price-card .price {
+      font-size: 1.1em;
+      color: var(--pink-deep);
+      font-weight: 700;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .teacher-card {
+      display: flex;
+      align-items: center;
+      gap: 1.5em;
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .teacher-card img {
+      width: 180px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(233, 138, 160, 0.2);
+    }
+
+    .teacher-info h3 {
+      margin: 0 0 0.3em;
+      font-size: 1.1em;
+    }
+
+    .teacher-info .role {
+      font-size: 0.55em;
+      color: var(--pink-deep);
+      margin-bottom: 1em;
+    }
+
+    .teacher-info li {
+      font-size: 0.5em;
+      padding: 0.25em 0;
+      border: none;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1em;
+      max-width: 900px;
+      margin: 1em auto 0;
+    }
+
+    .process-item {
+      background: white;
+      border-radius: 16px;
+      padding: 1em;
+      border: 1px solid var(--pink-soft);
+    }
+
+    .process-item .num {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.4em;
+      color: var(--pink);
+      font-weight: 700;
+    }
+
+    .process-item .title {
+      font-size: 0.7em;
+      font-weight: 600;
+      margin: 0.3em 0;
+    }
+
+    .process-item .desc {
+      font-size: 0.5em;
+      opacity: 0.7;
+    }
+
+    .contact-box {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5em 2em;
+      max-width: 600px;
+      margin: 1em auto;
+      border: 1px solid var(--pink-soft);
+    }
+
+    .ending {
+      background: linear-gradient(135deg, var(--background) 0%, var(--pink-soft) 100%);
+    }
+
+    .ending h2 {
+      font-size: 2em;
+    }
+
+    .ending .note {
+      margin-top: 2em;
+      font-size: 0.7em;
+      opacity: 0.7;
+    }
+
+    .small { font-size: 0.6em; }
+
+    @media print {
+      .reveal section {
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 封面 -->
+      <section class="cover">
+        <div class="badge">韩国一站式形象诊断体系</div>
+        <h1>Coco Color</h1>
+        <p class="subtitle">色彩诊断 · 整体形象设计</p>
+        <p class="tagline">用专业的色彩科学，找到最适合你的色彩与穿搭</p>
+      </section>
+
+      <!-- 品牌介绍 -->
+      <section>
+        <h2>Brand · 品牌介绍</h2>
+        <p style="max-width: 720px; margin: 1em auto;">
+          Coco Color 专注色彩诊断与整体形象设计，提供从肤色诊断、服装色彩、妆容配饰到购物顾问的一站式服务。
+        </p>
+        <p style="max-width: 720px; margin: 0 auto;">
+          坚持自然光诊断环境与进口诊断工具精准测肤，让每一次诊断都有可对照、可带走、可长期参考的结果。
+        </p>
+        <div class="grid-2" style="margin-top: 1.5em;">
+          <div class="price-card" style="text-align: center;">
+            <h3>进口诊断工具</h3>
+            <p class="desc">进口顶级工具精准测定肤色基调</p>
+          </div>
+          <div class="price-card" style="text-align: center;">
+            <h3>专业诊断师</h3>
+            <p class="desc">资深诊断师现场亲自一对一诊断</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 老师 COCO -->
+      <section>
+        <h2>Stylists · 诊断老师</h2>
+        <div class="teacher-card">
+          <img src="/coco.jpg" alt="COCO">
+          <div class="teacher-info">
+            <h3>COCO</h3>
+            <p class="role">COCO COLOR 色彩美妆机构 · 主理人</p>
+            <ul>
+              <li>韩国色彩诊断协会 一级认证色彩诊断师</li>
+              <li>7 年资深韩国整体形象顾问</li>
+              <li>韩国郑瑄茉化妆学院毕业｜专业韩妆培训讲师</li>
+              <li>韩国化妆协会广州分会会长</li>
+              <li>原创研发二十一型中性色韩式色彩诊断体系</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 老师 乐飞 -->
+      <section>
+        <h2>Stylists · 诊断老师</h2>
+        <div class="teacher-card">
+          <img src="/teachers/lefei.jpg" alt="乐飞">
+          <div class="teacher-info">
+            <h3>乐飞</h3>
+            <p class="role">S级诊断师</p>
+            <ul>
+              <li>15 年资深形象美学导师｜明星化妆造型师</li>
+              <li>前屈臣氏 & 娇兰佳人总部首席彩妆培训讲师</li>
+              <li>江苏卫视《非诚勿扰》特邀嘉宾</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 服务项目总览 -->
+      <section>
+        <h2>Service · 诊断项目</h2>
+        <p class="small">从基础色彩到高阶诊断，从骨骼体型到婚礼形象，满足不同需求</p>
+        <div class="grid-2" style="margin-top: 1em;">
+          <div class="price-card">
+            <h3>基础色彩测试 · BASIC</h3>
+            <p class="desc">经典八季型定基调，快速了解自身适配色</p>
+          </div>
+          <div class="price-card">
+            <h3>进阶色彩测试 · PLUS</h3>
+            <p class="desc">在八季型基础上细分，色彩判断更精准</p>
+          </div>
+          <div class="price-card">
+            <h3>高阶色彩测试 · ADVANCED</h3>
+            <p class="desc">二十一季型深度诊断，全维度色彩适配</p>
+          </div>
+          <div class="price-card">
+            <h3>骨骼体型诊断 · BODY</h3>
+            <p class="desc">分析骨骼与体型，定制整体形象设计方案</p>
+          </div>
+          <div class="price-card" style="grid-column: span 2;">
+            <h3>婚礼诊断 · WEDDING</h3>
+            <p class="desc">将色彩诊断、骨骼体型诊断与婚礼场景美学结合，为新娘定制专属婚礼形象方案</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COCO 价格 -->
+      <section>
+        <h2>Service · COCO 主理人</h2>
+        <div class="grid-2">
+          <div class="price-card">
+            <h3>基础色彩测试</h3>
+            <p class="desc">40分钟 · 经典八季型定基调</p>
+            <p class="price">¥699</p>
+          </div>
+          <div class="price-card">
+            <h3>进阶色彩测试</h3>
+            <p class="desc">1小时 · 十六季型精准细分</p>
+            <p class="price">¥899</p>
+          </div>
+          <div class="price-card">
+            <h3>高阶色彩测试</h3>
+            <p class="desc">1.5小时 · 二十一季型深度诊断</p>
+            <p class="price">¥1,098</p>
+          </div>
+          <div class="price-card">
+            <h3>骨骼体型诊断</h3>
+            <p class="desc">1小时 · 骨骼与体型分析</p>
+            <p class="price">¥1,098</p>
+          </div>
+          <div class="price-card" style="grid-column: span 2;">
+            <h3>婚礼诊断</h3>
+            <p class="desc">1小时 · 新娘整体形象定制</p>
+            <p class="price">¥1,198</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 乐飞 价格 -->
+      <section>
+        <h2>Service · S级诊断师 乐飞</h2>
+        <div class="grid-2">
+          <div class="price-card">
+            <h3>基础色彩测试</h3>
+            <p class="desc">40分钟 · 经典八季型定基调</p>
+            <p class="price">¥599</p>
+          </div>
+          <div class="price-card">
+            <h3>进阶色彩测试</h3>
+            <p class="desc">1小时 · 十六季型精准细分</p>
+            <p class="price">¥799</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 诊断明细 -->
+      <section>
+        <h2>Details · 诊断明细</h2>
+        <div class="grid-2" style="text-align: left;">
+          <div class="price-card">
+            <h3>基础色彩诊断</h3>
+            <ul>
+              <li>讲解色彩诊断知识</li>
+              <li>肤色测量仪诊断肤色</li>
+              <li>服装色彩诊断【经典八季型】</li>
+              <li>现有化妆包筛查 + 适配彩妆推荐</li>
+              <li>纸质报告 + 色卡 + PDF 电子报告</li>
+            </ul>
+          </div>
+          <div class="price-card">
+            <h3>进阶色彩诊断</h3>
+            <ul>
+              <li>讲解十六季型色彩理论</li>
+              <li>肤色测量仪诊断肤色</li>
+              <li>服装直曲、量感、对比度诊断</li>
+              <li>首饰材质、镜框、发色、美甲诊断</li>
+              <li>香水测试 + 定制试香卡</li>
+              <li>纸质报告 + 色卡 + PDF 电子报告</li>
+            </ul>
+          </div>
+          <div class="price-card">
+            <h3>高阶色彩诊断</h3>
+            <ul>
+              <li>二十一季型 + 中性色诊断</li>
+              <li>脸型、五官风格分析</li>
+              <li>发色、发型、妆容风格推荐</li>
+              <li>粉底液、腮红、口红试色</li>
+              <li>纸质报告 + 色卡 + PDF 电子报告</li>
+            </ul>
+          </div>
+          <div class="price-card">
+            <h3>骨骼体型诊断</h3>
+            <ul>
+              <li>触摸式骨骼诊断（3型）</li>
+              <li>量化式体型诊断（6型）</li>
+              <li>服装版型、廓形、领型、袖型建议</li>
+              <li>配饰、发型、穿搭避雷要点</li>
+              <li>纸质报告 + PDF 电子版</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 预约流程 -->
+      <section>
+        <h2>Process · 预约流程</h2>
+        <div class="process-grid">
+          <div class="process-item">
+            <div class="num">01</div>
+            <div class="title">线上沟通</div>
+            <div class="desc">了解需求，预约到店时间</div>
+          </div>
+          <div class="process-item">
+            <div class="num">02</div>
+            <div class="title">现场到诊</div>
+            <div class="desc">自然光环境，仪器测肤</div>
+          </div>
+          <div class="process-item">
+            <div class="num">03</div>
+            <div class="title">全彩诊断</div>
+            <div class="desc">服装 / 妆容 / 配饰逐项分析</div>
+          </div>
+          <div class="process-item">
+            <div class="num">04</div>
+            <div class="title">诊断报告</div>
+            <div class="desc">纸质报告 + 色卡 + 电子存档</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 门店地址 -->
+      <section>
+        <h2>Contact · 门店地址</h2>
+        <div class="contact-box">
+          <p style="font-size: 0.9em; font-weight: 600; margin-bottom: 0.5em;">
+            广州市天河区 华强路2号 富力盈丰大厦A座 3楼336室
+          </p>
+          <p style="font-size: 0.6em; opacity: 0.7;">
+            营业时间：11:00 - 18:00
+          </p>
+        </div>
+        <p class="small" style="margin-top: 1.5em;">预约请通过线上沟通 · 现场到店诊断</p>
+      </section>
+
+      <!-- 结尾 -->
+      <section class="ending">
+        <h2>Coco Color</h2>
+        <p class="subtitle">色彩诊断 · 整体形象设计</p>
+        <p class="note">期待与你相遇，找到最适合自己的色彩与风格</p>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      width: 1280,
+      height: 720,
+      margin: 0.04,
+      transition: 'slide',
+      backgroundTransition: 'fade'
+    });
+  </script>
+</body>
+</html>
