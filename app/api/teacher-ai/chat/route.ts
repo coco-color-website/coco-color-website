@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import {
   ChatMessage,
   buildTeacherSystemPrompt,
+  buildCocoSystemPrompt,
   getTeacherLLMConfig,
+  retrieveCocoCards,
+  shouldUseRAG,
   StreamChunk,
 } from "@/lib/teacher-ai";
 
@@ -25,6 +28,15 @@ export async function POST(request: Request) {
 
     const { apiKey, baseUrl, model } = getTeacherLLMConfig();
 
+    // 只有 COCO 主理人分身启用 RAG，其他老师保持原逻辑。
+    let systemPrompt = buildTeacherSystemPrompt(teacherName);
+    if (shouldUseRAG(teacherName)) {
+      const lastUserQuestion =
+        messages.filter((m) => m.role === "user").pop()?.content || "";
+      const retrievedCards = await retrieveCocoCards(lastUserQuestion);
+      systemPrompt = buildCocoSystemPrompt(retrievedCards);
+    }
+
     const res = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
@@ -33,10 +45,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model,
-        messages: [
-          { role: "system", content: buildTeacherSystemPrompt(teacherName) },
-          ...messages,
-        ],
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
         temperature: 0.7,
         max_tokens: 1000,
         stream: true,
@@ -123,6 +132,7 @@ export async function POST(request: Request) {
     // 环境变量缺失等初始化错误返回 JSON，方便前端展示
     if (
       message.includes("LLM_API_KEY") ||
+      message.includes("OPENAI_API_KEY") ||
       message.includes("未配置") ||
       message.includes("占位符")
     ) {
