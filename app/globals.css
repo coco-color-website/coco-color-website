@@ -58,3 +58,90 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/* 老师 AI 分身聊天气泡内的 Markdown 渲染 */
+.markdown p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+}
+
+.markdown ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+}
+
+.markdown li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown code {
+  background: rgba(233, 138, 160, 0.15);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.markdown pre {
+  background: rgba(253, 230, 236, 0.8);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+
+.markdown pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid var(--pink);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.markdown th {
+  background: var(--pink-soft);
+}
+
+.markdown a {
+  color: var(--pink-deep);
+  text-decoration: underline;
+}
+
+.markdown blockquote {
+  border-left: 3px solid var(--pink-deep);
+  padding-left: 0.75rem;
+  margin: 0.5rem 0;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.markdown hr {
+  border: 0;
+  border-top: 1px solid var(--pink);
+  margin: 0.75rem 0;
+}
