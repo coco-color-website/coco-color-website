@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { callLLM, logChat, ChatMessage } from "@/lib/aicoco";
+import { callLLM, logChat, ChatMessage, retrieveCocoCardsForAicoco } from "@/lib/aicoco";
 
 export const runtime = "edge";
 
@@ -18,7 +18,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const { content, model } = await callLLM(messages, persona);
+    // COCO 主理人分身启用 QA 卡片 RAG。
+    let retrievedCards: Awaited<ReturnType<typeof retrieveCocoCardsForAicoco>> = [];
+    if (persona === "coco") {
+      const lastUserQuestion =
+        messages.filter((m) => m.role === "user").pop()?.content || "";
+      retrievedCards = await retrieveCocoCardsForAicoco(lastUserQuestion);
+    }
+
+    const { content, model } = await callLLM(messages, persona, retrievedCards);
 
     await logChat({
       timestamp: new Date().toISOString(),

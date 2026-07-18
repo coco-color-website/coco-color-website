@@ -10,6 +10,9 @@ import {
   colorDiagnosisCaveats,
   bodyMeasurementGuide,
 } from "./aicoco-knowledge";
+import type { QACard } from "./qa-cards";
+import { formatCardsForPrompt } from "./qa-cards";
+import { retrieveCardsForQuestion } from "./rag";
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -29,7 +32,7 @@ const SYSTEM_PROMPT = `${buildKnowledgePrompt()}
 === 通用边界 ===
 你是 AICOCO，Coco Color 可可色彩诊断工作室的 AI 助理。你使用上面的专业知识回答用户问题。只回答与色彩诊断、四季型、八季型、骨骼体型诊断、脸型体型、妆容、穿搭、配饰、韩妆风格、预约流程相关的问题。如果用户问到无关话题，请礼貌地引导回色彩诊断相关话题。回答要简洁、友好、专业，控制在 300 字以内。不要编造用户的具体季型或骨骼类型；如用户未说明，先询问其诊断结果再给出建议。`;
 
-function buildCocoSystemPrompt(): string {
+function buildCocoSystemPrompt(retrievedCards: QACard[] = []): string {
   const coco = siteContent.teachers.find((t) => t.name === "COCO");
   if (!coco) {
     return SYSTEM_PROMPT;
@@ -42,6 +45,8 @@ function buildCocoSystemPrompt(): string {
         `- ${s.zh}（${s.en}）：COCO 主理人 ¥${s.price.COCO}，时长 ${s.duration}。${s.desc}`
     )
     .join("\n");
+
+  const cardsText = formatCardsForPrompt(retrievedCards);
 
   return `${buildKnowledgePrompt()}
 
@@ -57,6 +62,11 @@ ${serviceLines}
 门店地址：广州市天河区华强路2号富力盈丰大厦A座 3楼336室。
 营业时间：11:00 - 18:00。
 预约方式：建议用户到店或通过线上沟通确认具体时间。
+
+=== 当前对话可参考的 QA 卡片 ===
+下面是根据用户问题召回的相关参考卡片。回答时请优先基于这些卡片的内容，不要编造与卡片不符的价格、服务明细或专业结论。
+
+${cardsText}
 
 === 你的说话方式 ===
 你就是在和学员或潜在客户聊天，不是客服，也不是工具。你叫 COCO，你有自己的判断、取舍和表达习惯。
@@ -118,14 +128,15 @@ ${serviceLines}
 
 export async function callLLM(
   messages: ChatMessage[],
-  persona: "aicoco" | "coco" = "aicoco"
+  persona: "aicoco" | "coco" = "aicoco",
+  retrievedCards: QACard[] = []
 ): Promise<{ content: string; model: string }> {
   const apiKey = (process.env.LLM_API_KEY || "").trim();
   const baseUrl = process.env.LLM_API_BASE || "https://api.deepseek.com/v1";
   const model = process.env.LLM_MODEL || "deepseek-chat";
 
   const systemPrompt =
-    persona === "coco" ? buildCocoSystemPrompt() : SYSTEM_PROMPT;
+    persona === "coco" ? buildCocoSystemPrompt(retrievedCards) : SYSTEM_PROMPT;
 
   const isPlaceholder =
     !apiKey ||
@@ -163,6 +174,25 @@ export async function callLLM(
   }
 
   return { content, model };
+}
+
+/**
+ * 为 AICOCO 的 COCO 主理人分身召回相似 QA 卡片。
+ * 召回失败不阻断对话，返回空数组。
+ */
+export async function retrieveCocoCardsForAicoco(
+  userQuestion: string
+): Promise<QACard[]> {
+  try {
+    return await retrieveCardsForQuestion(userQuestion, {
+      limit: 3,
+      threshold: 0.5,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn("[aicoco] RAG retrieval failed:", message);
+    return [];
+  }
 }
 
 function getKnowledgeMockResponse(
