@@ -4,7 +4,7 @@ import { useState } from "react";
 import AicocoChat from "@/app/components/aicoco-chat";
 
 export default function AicocoPageContent() {
-  const [persona, setPersona] = useState<"aicoco" | "coco">("aicoco");
+  const [persona, setPersona] = useState<"aicoco" | "coco">("coco");
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-16">
