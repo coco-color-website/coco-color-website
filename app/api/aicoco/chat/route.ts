@@ -4,11 +4,12 @@ import { callLLM, logChat, ChatMessage } from "@/lib/aicoco";
 export const runtime = "edge";
 
 export async function POST(request: Request) {
-  let body: { messages?: ChatMessage[] } = {};
+  let body: { messages?: ChatMessage[]; persona?: string } = {};
 
   try {
     body = await request.json();
     const messages: ChatMessage[] = body.messages || [];
+    const persona = body.persona === "coco" ? "coco" : "aicoco";
 
     if (!messages.length || !messages.some((m) => m.role === "user")) {
       return NextResponse.json(
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { content, model } = await callLLM(messages);
+    const { content, model } = await callLLM(messages, persona);
 
     await logChat({
       timestamp: new Date().toISOString(),

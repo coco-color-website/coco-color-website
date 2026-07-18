@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import siteContent from "@/data/content.json";
 import {
   buildKnowledgePrompt,
   colorSeasonProfiles,
@@ -28,12 +29,54 @@ const SYSTEM_PROMPT = `${buildKnowledgePrompt()}
 === 通用边界 ===
 你是 AICOCO，Coco Color 可可色彩诊断工作室的 AI 助理。你使用上面的专业知识回答用户问题。只回答与色彩诊断、四季型、八季型、骨骼体型诊断、脸型体型、妆容、穿搭、配饰、韩妆风格、预约流程相关的问题。如果用户问到无关话题，请礼貌地引导回色彩诊断相关话题。回答要简洁、友好、专业，控制在 300 字以内。不要编造用户的具体季型或骨骼类型；如用户未说明，先询问其诊断结果再给出建议。`;
 
+function buildCocoSystemPrompt(): string {
+  const coco = siteContent.teachers.find((t) => t.name === "COCO");
+  if (!coco) {
+    return SYSTEM_PROMPT;
+  }
+
+  const serviceLines = siteContent.services
+    .filter((s) => s.price.COCO)
+    .map(
+      (s) =>
+        `- ${s.zh}（${s.en}）：COCO 主理人 ¥${s.price.COCO}，时长 ${s.duration}。${s.desc}`
+    )
+    .join("\n");
+
+  return `${buildKnowledgePrompt()}
+
+=== COCO 主理人身份 ===
+你是 COCO，Coco Color 可可色彩诊断工作室的创始人与主理人。你以第一人称"我"与用户交流。
+
+你的头衔与资质：
+${coco.bio.map((line) => `- ${line}`).join("\n")}
+
+=== Coco Color 服务项目（COCO 主理人）===
+${serviceLines}
+
+门店地址：广州市天河区华强路2号富力盈丰大厦A座 3楼336室。
+营业时间：11:00 - 18:00。
+预约方式：建议用户到店或通过线上沟通确认具体时间。
+
+=== 回答风格 ===
+- 专业中带温度：既要有主理人的专业判断，也要像面对面咨询一样自然、真诚。
+- 愿意直接回答项目价格和预约：用户问价格、时长、包含内容时，直接引用上面的价目表；如果不确定具体预约档期，引导用户留微信或电话确认。
+- 不编造：不编造用户的季型、骨骼类型或体型；如果用户没有说明，先询问其诊断结果或观察到的特征，再给出建议。
+- 控制长度：每次回复控制在 300 字以内，必要时可分点说明。
+- 边界：只回答与色彩诊断、四季型、八季型、骨骼体型、脸型体型、妆容、穿搭、配饰、韩妆风格、Coco Color 服务、预约相关的问题；遇到无关话题，礼貌引导回形象美学相关话题。
+- 结尾习惯：必要时可以邀请用户"到店见面聊"或"加微信约具体时间"。`;
+}
+
 export async function callLLM(
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  persona: "aicoco" | "coco" = "aicoco"
 ): Promise<{ content: string; model: string }> {
   const apiKey = (process.env.LLM_API_KEY || "").trim();
   const baseUrl = process.env.LLM_API_BASE || "https://api.deepseek.com/v1";
   const model = process.env.LLM_MODEL || "deepseek-chat";
+
+  const systemPrompt =
+    persona === "coco" ? buildCocoSystemPrompt() : SYSTEM_PROMPT;
 
   const isPlaceholder =
     !apiKey ||
@@ -42,7 +85,7 @@ export async function callLLM(
     apiKey.startsWith("sk-placeholder");
 
   if (isPlaceholder) {
-    return { content: getKnowledgeMockResponse(messages), model: "mock" };
+    return { content: getKnowledgeMockResponse(messages, persona), model: "mock" };
   }
 
   const res = await fetch(`${baseUrl}/chat/completions`, {
@@ -53,7 +96,7 @@ export async function callLLM(
     },
     body: JSON.stringify({
       model,
-      messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+      messages: [{ role: "system", content: systemPrompt }, ...messages],
       temperature: 0.7,
       max_tokens: 700,
     }),
@@ -73,10 +116,26 @@ export async function callLLM(
   return { content, model };
 }
 
-function getKnowledgeMockResponse(messages: ChatMessage[]): string {
+function getKnowledgeMockResponse(
+  messages: ChatMessage[],
+  persona: "aicoco" | "coco" = "aicoco"
+): string {
   const lastUser =
     messages.filter((m) => m.role === "user").pop()?.content || "";
   const q = lastUser.toLowerCase();
+
+  if (persona === "coco") {
+    if (
+      q.includes("价格") ||
+      q.includes("多少钱") ||
+      q.includes("预约") ||
+      q.includes("项目")
+    ) {
+      return "目前 COCO 主理人的诊断项目：\n- 基础色彩测试 ¥699，40 分钟\n- 进阶色彩测试 ¥899，1 小时\n- 高阶色彩测试 ¥1098，1.5 小时\n- 骨骼体型诊断 ¥1098，1 小时\n- 婚礼诊断 ¥1198，1 小时\n\n门店在广州天河区华强路2号富力盈丰大厦A座 3楼336室，营业时间 11:00-18:00。想预约的话可以先加我微信或电话，我们确认具体时间。";
+    }
+
+    return "嗨，我是 COCO。你可以问我关于色彩诊断、骨骼体型、韩妆风格、穿搭配色，或者 Coco Color 的项目价格和预约方式。告诉我你的情况，我会尽量给你实在的建议。";
+  }
 
   // 季型匹配
   for (const season of colorSeasonProfiles) {
