@@ -1,12 +1,11 @@
 import { supabase } from "./supabase";
 import type { QACard } from "./qa-cards";
 
-const EMBEDDING_MODEL = "text-embedding-3-small";
-const EMBEDDING_DIMENSIONS = 1536;
-
-export interface OpenAIEmbeddingConfig {
+export interface EmbeddingConfig {
+  apiBase: string;
   apiKey: string;
   model: string;
+  dimensions: number;
 }
 
 export interface RetrievalOptions {
@@ -15,33 +14,41 @@ export interface RetrievalOptions {
 }
 
 /**
- * 读取 OpenAI embedding 配置。
+ * 读取 embedding 配置。
+ * 支持 OpenAI 兼容接口（OpenAI、火山方舟等）。
  * 仅在服务端调用。
  */
-export function getOpenAIEmbeddingConfig(): OpenAIEmbeddingConfig {
-  const apiKey = (process.env.OPENAI_API_KEY || "").trim();
+export function getEmbeddingConfig(): EmbeddingConfig {
+  const apiBase = (
+    process.env.EMBEDDING_API_BASE || "https://api.openai.com/v1"
+  ).trim();
+  const apiKey = (process.env.EMBEDDING_API_KEY || "").trim();
+  const model = (
+    process.env.EMBEDDING_MODEL || "text-embedding-3-small"
+  ).trim();
+  const dimensions = parseInt(process.env.EMBEDDING_DIMENSIONS || "1536", 10);
 
   if (
     !apiKey ||
-    apiKey === "your_openai_api_key_here" ||
+    apiKey === "your_embedding_api_key_here" ||
     apiKey.startsWith("your_") ||
     apiKey.startsWith("sk-placeholder")
   ) {
     throw new Error(
-      "OPENAI_API_KEY 未配置或仍是占位符，请在 .env.local 中设置真实 Key"
+      "EMBEDDING_API_KEY 未配置或仍是占位符，请在 .env.local 中设置真实 Key"
     );
   }
 
-  return { apiKey, model: EMBEDDING_MODEL };
+  return { apiBase, apiKey, model, dimensions };
 }
 
 /**
- * 调用 OpenAI Embedding API 生成向量。
+ * 调用 Embedding API 生成向量。
  */
 export async function getEmbedding(text: string): Promise<number[]> {
-  const { apiKey, model } = getOpenAIEmbeddingConfig();
+  const { apiBase, apiKey, model, dimensions } = getEmbeddingConfig();
 
-  const res = await fetch("https://api.openai.com/v1/embeddings", {
+  const res = await fetch(`${apiBase}/embeddings`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,25 +57,35 @@ export async function getEmbedding(text: string): Promise<number[]> {
     body: JSON.stringify({
       input: text,
       model,
-      dimensions: EMBEDDING_DIMENSIONS,
+      dimensions,
     }),
   });
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(`OpenAI embedding failed: ${res.status} ${errorText}`);
+    throw new Error(`Embedding failed: ${res.status} ${errorText}`);
   }
 
   const data = await res.json();
   const embedding: number[] | undefined = data.data?.[0]?.embedding;
 
-  if (!embedding || embedding.length !== EMBEDDING_DIMENSIONS) {
-    throw new Error(
-      `OpenAI embedding returned unexpected dimensions: ${embedding?.length}`
-    );
+  if (!embedding) {
+    throw new Error("Embedding returned empty embedding");
   }
 
-  return embedding;
+  if (embedding.length === dimensions) {
+    return embedding;
+  }
+
+  // 部分模型（如 Doubao-embedding）可能忽略 dimensions 参数返回完整向量。
+  // 如果返回维度大于预期，截取前 N 维（Matryoshka 语义下前 N 维有效）。
+  if (embedding.length > dimensions) {
+    return embedding.slice(0, dimensions);
+  }
+
+  throw new Error(
+    `Embedding returned unexpected dimensions: ${embedding.length}, expected ${dimensions}`
+  );
 }
 
 export interface RetrievedCard extends QACard {

@@ -8,7 +8,12 @@
 - 已在 `.env.local` 中配置：
   - `SUPABASE_URL`
   - `SUPABASE_ANON_KEY`（用于前端/Edge Runtime 写入时，需配合下方 RLS 策略）
-  - `OPENAI_API_KEY`（用于生成 embedding）
+  - `EMBEDDING_API_BASE`
+  - `EMBEDDING_API_KEY`
+  - `EMBEDDING_MODEL`
+  - `EMBEDDING_DIMENSIONS`
+
+本示例使用火山方舟 `doubao-embedding-text-240715`，输出维度 **1024**。若使用 OpenAI `text-embedding-3-small`，请把下方 SQL 里的 `vector(1024)` 改为 `vector(1536)`。
 
 ## 1. 创建向量表与匹配函数
 
@@ -19,15 +24,15 @@
 create extension if not exists vector;
 
 -- QA 卡片表
--- 注意：向量维度需与 embedding 模型一致。
--- OpenAI text-embedding-3-small 为 1536 维。
+-- 注意：向量维度需与 EMBEDDING_DIMENSIONS 一致。
+-- 当前使用 doubao-embedding-text-240715 的 1024 维。
 create table if not exists public.qa_cards (
   id text primary key,
   category text not null,
   question text not null,
   answer_points text[] not null,
   test_target text,
-  embedding vector(1536),
+  embedding vector(1024),
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
 );
@@ -58,7 +63,7 @@ create policy "Allow anonymous updates on qa_cards"
 -- match_threshold：余弦相似度阈值，越大越严格（范围 0~1）
 -- match_count：返回条数上限
 create or replace function public.match_qa_cards(
-  query_embedding vector(1536),
+  query_embedding vector(1024),
   match_threshold float default 0.5,
   match_count int default 3
 )
@@ -107,14 +112,14 @@ curl -X POST http://localhost:3000/api/admin/seed-qa-cards \
 
 ## 4. 切换 embedding 模型时的注意事项
 
-如果后续从 OpenAI 切换到其他 embedding 服务：
+如果后续切换到其他 embedding 服务：
 
-1. 确保新模型输出维度仍为 1536；
-2. 若维度不同，需要修改 `embedding vector(1536)` 的维度，并重新生成所有卡片 embedding；
-3. 同时修改 `lib/rag.ts` 中的 `EMBEDDING_MODEL` 和 API 调用逻辑。
+1. 修改 `.env.local` 中的 `EMBEDDING_API_BASE`、`EMBEDDING_API_KEY`、`EMBEDDING_MODEL`、`EMBEDDING_DIMENSIONS`；
+2. 确保 Supabase 表里的 `vector(N)` 维度与 `EMBEDDING_DIMENSIONS` 一致；
+3. 重新生成所有卡片 embedding（重新调用 seed 接口）。
 
 ## 安全提示
 
 - `qa_cards` 表目前允许匿名插入/更新/查询。它只存放公开 QA 卡片，不含敏感信息。
 - 如果后续需要更严格的权限，可把写入操作改为仅 service role key 可执行，并把管理接口放到受保护的后端。
-- 不要把 `OPENAI_API_KEY` 或 Supabase service role key 暴露给前端。
+- 不要把 `EMBEDDING_API_KEY`、Supabase service role key 或 `LLM_API_KEY` 暴露给前端。
