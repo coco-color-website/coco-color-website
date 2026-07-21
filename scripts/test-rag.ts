@@ -26,7 +26,7 @@ async function main() {
     try {
       const results = await retrieveCardsForQuestion(query, {
         limit: 2,
-        threshold: 0.3,
+        threshold: 0.5,
       });
       if (results.length === 0) {
         console.log("未召回卡片");

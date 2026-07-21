@@ -145,7 +145,7 @@ export async function callLLM(
     apiKey.startsWith("sk-placeholder");
 
   if (isPlaceholder) {
-    return { content: getKnowledgeMockResponse(messages, persona), model: "mock" };
+    return { content: getKnowledgeMockResponse(messages, persona, retrievedCards), model: "mock" };
   }
 
   const res = await fetch(`${baseUrl}/chat/completions`, {
@@ -197,13 +197,21 @@ export async function retrieveCocoCardsForAicoco(
 
 function getKnowledgeMockResponse(
   messages: ChatMessage[],
-  persona: "aicoco" | "coco" = "aicoco"
+  persona: "aicoco" | "coco" = "aicoco",
+  retrievedCards: QACard[] = []
 ): string {
   const lastUser =
     messages.filter((m) => m.role === "user").pop()?.content || "";
   const q = lastUser.toLowerCase();
 
   if (persona === "coco") {
+    // 如果有召回的 QA 卡片，优先基于卡片内容生成 mock 回答，
+    // 方便本地无 LLM Key 时也能验证 RAG 链路。
+    if (retrievedCards.length > 0) {
+      const topCard = retrievedCards[0];
+      return `【本地 mock 回答 · 基于召回卡片 ${topCard.id}】\n\n问题：${topCard.question}\n\n回答要点：\n${topCard.answer_points.map((p) => `- ${p}`).join("\n")}`;
+    }
+
     if (
       q.includes("价格") ||
       q.includes("多少钱") ||

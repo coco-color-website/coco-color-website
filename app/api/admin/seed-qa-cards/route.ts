@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       success: true,
       mode: "vector-similarity",
       message:
-        "当前 QA 卡片 RAG 使用本地 Embedding 向量库。如需更新卡片或 Embedding，请修改 data/qa-cards.json 后运行 `npx tsx scripts/generate-qa-embeddings.ts`，然后重新部署。",
+        "当前 QA 卡片 RAG 使用 Doubao Embedding API + SQLite 向量库。如需更新卡片或 Embedding，请修改 data/qa-cards.json 后运行 `npx tsx --env-file=.env.local scripts/generate-qa-embeddings.ts`，然后重新部署。",
       count: cards.length,
       ids: cards.map((c) => c.id),
       embedding: config,

@@ -1,47 +1,85 @@
-import { pipeline, type FeatureExtractionPipeline, env } from "@xenova/transformers";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// 使用中文语义检索效果较好的轻量模型。
-// 模型文件已预下载到 local_models/，首次调用无需联网。
+// 使用火山方舟 Doubao 多模态 Embedding API。
 // 入库和查询必须使用同一个模型，以保证向量在同一语义空间。
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(__dirname, "..");
-const EMBEDDING_MODEL = "bge-small-zh-v1.5";
 
-// 强制使用本地模型，避免运行时联网下载。
-env.allowLocalModels = true;
-env.allowRemoteModels = false;
-env.useBrowserCache = false;
-env.useFS = true;
-env.localModelPath = path.join(projectRoot, "local_models");
+const API_BASE = process.env.EMBEDDING_API_BASE || "https://ark.cn-beijing.volces.com/api/v3";
+const API_KEY = process.env.EMBEDDING_API_KEY || "";
+const MODEL = process.env.EMBEDDING_MODEL || "doubao-embedding-vision-251215";
+const DIMENSIONS = parseInt(process.env.EMBEDDING_DIMENSIONS || "2048", 10);
 
-let extractor: FeatureExtractionPipeline | null = null;
+export interface EmbeddingConfig {
+  apiBase: string;
+  apiKey: string;
+  model: string;
+  dimensions: number;
+}
 
-/**
- * 获取共享的 Embedding pipeline 实例。
- * 首次调用会加载模型，后续调用复用。
- */
-async function getExtractor(): Promise<FeatureExtractionPipeline> {
-  if (!extractor) {
-    extractor = await pipeline("feature-extraction", EMBEDDING_MODEL);
-  }
-  return extractor;
+export function getEmbeddingConfig(): EmbeddingConfig {
+  const maskedKey = API_KEY
+    ? `${API_KEY.slice(0, 8)}...${API_KEY.slice(-4)}`
+    : "";
+  return {
+    apiBase: API_BASE,
+    apiKey: maskedKey,
+    model: MODEL,
+    dimensions: DIMENSIONS,
+  };
+}
+
+interface DoubaoEmbeddingResponse {
+  data?: {
+    embedding: number[];
+  };
+  usage?: {
+    prompt_tokens: number;
+    total_tokens: number;
+  };
+  error?: {
+    message: string;
+    type: string;
+    code: string;
+  };
 }
 
 /**
- * 把文本转成向量。
- * @param text 要编码的文本。对 QA 卡片建议传入：category + question + answer_points。
- * @returns 归一化后的浮点向量，可直接用于余弦相似度计算。
+ * 调用 Doubao 多模态 Embedding API 生成文本向量。
+ * 只使用 text 类型输入，不传图片。
  */
 export async function getEmbedding(text: string): Promise<number[]> {
-  const pipe = await getExtractor();
-  const result = await pipe(text, {
-    pooling: "mean",
-    normalize: true,
+  if (!API_KEY) {
+    throw new Error("EMBEDDING_API_KEY 未配置");
+  }
+
+  const url = `${API_BASE.replace(/\/$/, "")}/embeddings/multimodal`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      input: [
+        {
+          type: "text",
+          text,
+        },
+      ],
+    }),
   });
-  // result.data 是 Float32Array，转成普通数组便于 JSON 序列化。
-  return Array.from(result.data as Float32Array);
+
+  const result = (await response.json()) as DoubaoEmbeddingResponse;
+
+  if (!response.ok || result.error) {
+    const message = result.error?.message || `Embedding API failed: ${response.status}`;
+    throw new Error(message);
+  }
+
+  const embedding = result.data?.embedding;
+  if (!embedding || embedding.length === 0) {
+    throw new Error("Embedding API returned empty embedding");
+  }
+
+  return embedding;
 }
 
 /**
@@ -56,5 +94,3 @@ export async function getEmbeddings(texts: string[]): Promise<number[][]> {
   }
   return embeddings;
 }
-
-export { EMBEDDING_MODEL };
