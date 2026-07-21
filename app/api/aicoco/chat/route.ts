@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { callLLM, logChat, ChatMessage, retrieveCocoCardsForAicoco } from "@/lib/aicoco";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   let body: { messages?: ChatMessage[]; persona?: string } = {};

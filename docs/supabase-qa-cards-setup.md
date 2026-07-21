@@ -1,5 +1,7 @@
 # Supabase 向量库设置（QA 卡片 RAG）
 
+> **注意**：当前项目已改用**本地 Embedding + JSON 向量库**方案，详见 `docs/qa-cards-vector-rag.md`。本文档保留作为 Supabase + API Embedding 的备选参考。
+
 本说明用于在 Supabase 中创建 QA 卡片向量表，供 COCO 主理人 AI 分身做相似召回。
 
 ## 前置条件

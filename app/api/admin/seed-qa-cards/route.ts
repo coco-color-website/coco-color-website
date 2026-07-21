@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { loadQACards } from "@/lib/qa-cards";
+import { getEmbeddingConfig } from "@/lib/rag";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
@@ -18,14 +19,16 @@ export async function POST(request: Request) {
     }
 
     const cards = loadQACards();
+    const config = getEmbeddingConfig();
 
     return NextResponse.json({
       success: true,
-      mode: "keyword-match",
+      mode: "vector-similarity",
       message:
-        "当前 QA 卡片使用本地 JSON + 关键词匹配，无需写入向量库。如需更新卡片，请直接修改 data/qa-cards.json 后重新部署。",
+        "当前 QA 卡片 RAG 使用本地 Embedding 向量库。如需更新卡片或 Embedding，请修改 data/qa-cards.json 后运行 `npx tsx scripts/generate-qa-embeddings.ts`，然后重新部署。",
       count: cards.length,
       ids: cards.map((c) => c.id),
+      embedding: config,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
