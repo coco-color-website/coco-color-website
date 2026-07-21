@@ -132,7 +132,6 @@ export async function POST(request: Request) {
     // 环境变量缺失等初始化错误返回 JSON，方便前端展示
     if (
       message.includes("LLM_API_KEY") ||
-      message.includes("EMBEDDING_API_KEY") ||
       message.includes("未配置") ||
       message.includes("占位符")
     ) {

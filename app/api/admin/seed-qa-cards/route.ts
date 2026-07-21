@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { loadQACards } from "@/lib/qa-cards";
-import { upsertQACards } from "@/lib/rag";
 
 export const runtime = "edge";
 
@@ -19,10 +18,12 @@ export async function POST(request: Request) {
     }
 
     const cards = loadQACards();
-    await upsertQACards(cards);
 
     return NextResponse.json({
       success: true,
+      mode: "keyword-match",
+      message:
+        "当前 QA 卡片使用本地 JSON + 关键词匹配，无需写入向量库。如需更新卡片，请直接修改 data/qa-cards.json 后重新部署。",
       count: cards.length,
       ids: cards.map((c) => c.id),
     });
