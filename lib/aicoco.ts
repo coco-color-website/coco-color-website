@@ -195,7 +195,7 @@ export async function retrieveCocoCardsForAicoco(
   try {
     return await retrieveCardsForQuestion(userQuestion, {
       limit: 3,
-      threshold: 0.3,
+      threshold: 0.5,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -270,12 +270,6 @@ function getKnowledgeMockResponse(
       return "具体名单我这边没有固定推荐，也不方便评价其他机构或博主，因为每个人的需求、预算和风格偏好差别挺大的。你可以从这几个维度去判断：老师是否有系统认证、诊断体系是否完整、是否用专业色布和工具、有没有真实案例。如果你在广州，可以来我们店里当面看看诊断流程和案例，再决定适不适合你。";
     }
 
-    // mock 模式下，如果有召回卡片，用 COCO 的口吻自然回应，
-    // 不暴露"mock""卡片"等内部设定。
-    if (retrievedCards.length > 0) {
-      return formatCardAsCocoResponse(retrievedCards[0]);
-    }
-
     if (
       q.includes("价格") ||
       q.includes("多少钱") ||
@@ -285,9 +279,69 @@ function getKnowledgeMockResponse(
       return "目前 COCO 主理人的诊断项目：\n- 基础色彩测试 ¥699，40 分钟\n- 进阶色彩测试 ¥899，1 小时\n- 高阶色彩测试 ¥1098，1.5 小时\n- 骨骼体型诊断 ¥1098，1 小时\n- 婚礼诊断 ¥1198，1 小时\n\n门店在广州天河区华强路2号富力盈丰大厦A座 3楼336室，营业时间 11:00-18:00。想预约的话可以先加我微信或电话，我们确认具体时间。";
     }
 
+    // 用户明确提到具体季型/骨骼/体型时，优先用专业知识库回答，
+    // 避免 RAG 跨季节错误召回（如深冬口红召回春季口红卡片）。
+    const specificTypeAnswer = matchSpecificTypeKnowledge(q);
+    if (specificTypeAnswer) {
+      return specificTypeAnswer;
+    }
+
+    // 通用概念/主题优先于 RAG，避免"什么是四季型"被错误召回成其他卡片。
+    const generalAnswer = matchGeneralKnowledge(q);
+    if (generalAnswer) {
+      return generalAnswer;
+    }
+
+    // mock 模式下，如果有召回卡片，用 COCO 的口吻自然回应，
+    // 不暴露"mock""卡片"等内部设定。
+    if (retrievedCards.length > 0) {
+      return formatCardAsCocoResponse(retrievedCards[0]);
+    }
+
     return "这个问题我目前没有具体资料，不能硬给你编一个答案。你可以说说你的情况，比如有没有做过色彩或骨骼诊断、现在最纠结的是哪个点，我帮你从能确认的方向里找一个最小下一步。";
   }
 
+  const generalAnswer = matchGeneralKnowledge(q);
+  if (generalAnswer) {
+    return generalAnswer;
+  }
+
+  return "你好！我是 AICOCO，Coco Color 的 AI 小助手。我可以根据 Coco 的专业课程体系，帮你解答色彩诊断（四季型/八季型）、骨骼体型诊断、脸型体型、妆容、穿搭、配饰相关问题。如果你已经做过诊断，告诉我你的季型和骨骼类型，我会给出更针对性的建议；也可以直接问我某个季型的特点或穿搭方向。";
+}
+
+function matchSpecificTypeKnowledge(q: string): string | null {
+  // 季型匹配：用户明确说出某个季型名时，返回该季型的完整画像。
+  for (const season of colorSeasonProfiles) {
+    if (
+      q.includes(season.name) ||
+      (season.english && q.includes(season.english.toLowerCase()))
+    ) {
+      return `【${season.name}】代表人物有 ${season.celebrities}。\n\n印象：${season.impression}。\n\n肤色/发色/瞳孔：${season.skinHairEyes}\n\n妆容建议：${season.makeup}\n\n推荐发色：${season.hairColor}\n\n穿搭方向：${season.clothing} 推荐面料如 ${season.fabric.replace(/。$/, "")}，图案可选 ${season.patterns.replace(/。$/, "")}。\n\n代表色：${season.colors.join("、")}。\n\n如果你还没做过专业诊断，建议预约到店，由老师结合自然光和专业工具判断哦。`;
+    }
+  }
+
+  // 骨骼类型匹配
+  for (const bone of boneTypeProfiles) {
+    const names = bone.name.toLowerCase().split(/\s*\/\s*/);
+    if (names.some((n) => q.includes(n))) {
+      return `【${bone.name}】代表人物：${bone.celebrities}。\n\n特征：${bone.characteristics}\n\n整体穿搭：${bone.clothing}\n\n领口：${bone.necklines}\n\n面料：${bone.fabrics}\n\n图案：${bone.patterns}\n\n发型：${bone.hairstyles}\n\n如果不确定自己是哪种骨骼类型，建议预约到店做专业骨骼-体型诊断。`;
+    }
+  }
+
+  // 体型匹配
+  for (const shape of bodyShapeProfiles) {
+    const names = [shape.name, shape.aliases].flatMap((n) =>
+      n.toLowerCase().split(/\s*[\/、,，]\s*/)
+    );
+    if (names.some((n) => q.includes(n))) {
+      return `【${shape.name}】${shape.features}\n\n推荐：${shape.best}\n\n避免：${shape.worst}\n\n体型只是参考，具体还要结合骨骼类型和身高比例综合判断。`;
+    }
+  }
+
+  return null;
+}
+
+function matchGeneralKnowledge(q: string): string | null {
   // 季型匹配
   for (const season of colorSeasonProfiles) {
     if (q.includes(season.name) || (season.english && q.includes(season.english.toLowerCase()))) {
@@ -330,7 +384,13 @@ function getKnowledgeMockResponse(
     return `${bodyMeasurementGuide}\n\n测量只是辅助判断，最终建议需要结合骨骼和体型综合诊断。`;
   }
 
-  if (q.includes("季型") || q.includes("四季") || q.includes("八季")) {
+  if (
+    q.includes("季型") &&
+    !q.includes("春") &&
+    !q.includes("夏") &&
+    !q.includes("秋") &&
+    !q.includes("冬")
+  ) {
     return "四季型色彩诊断把人的肤色、发色、瞳色等天然色调分为春、夏、秋、冬四大类，每一类再细分为两个亚型（共八季型：浅春、亮春、浅夏、柔夏、柔秋、深秋、亮冬、深冬）。每个季型都有最适合的服饰色、彩妆色、发色和配饰色。想知道自己属于哪一季型，建议预约一次到店诊断，老师会结合自然光和专业工具给出准确判断。";
   }
 
@@ -346,7 +406,7 @@ function getKnowledgeMockResponse(
     return "韩妆风格强调清透底妆、自然眉形、柔和的眼影和显气色的唇色。我们会根据你的季型推荐最适合的色调，比如春季型适合珊瑚橘、蜜桃粉，冬季型适合玫红、冷调正红等。告诉我你的季型，我可以给更具体的韩妆配色建议。";
   }
 
-  return "你好！我是 AICOCO，Coco Color 的 AI 小助手。我可以根据 Coco 的专业课程体系，帮你解答色彩诊断（四季型/八季型）、骨骼体型诊断、脸型体型、妆容、穿搭、配饰相关问题。如果你已经做过诊断，告诉我你的季型和骨骼类型，我会给出更针对性的建议；也可以直接问我某个季型的特点或穿搭方向。";
+  return null;
 }
 
 export async function logChat(entry: LogEntry) {
