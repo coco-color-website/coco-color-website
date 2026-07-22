@@ -11,7 +11,7 @@ import {
   bodyMeasurementGuide,
 } from "./aicoco-knowledge";
 import type { QACard } from "./qa-cards";
-import { formatCardsForPrompt } from "./qa-cards";
+import { loadQACards, formatCardsForPrompt } from "./qa-cards";
 import { retrieveCardsForQuestion } from "./rag";
 
 export interface ChatMessage {
@@ -193,15 +193,63 @@ export async function retrieveCocoCardsForAicoco(
   userQuestion: string
 ): Promise<QACard[]> {
   try {
-    return await retrieveCardsForQuestion(userQuestion, {
+    const vectorCards = await retrieveCardsForQuestion(userQuestion, {
       limit: 3,
       threshold: 0.5,
     });
+    if (vectorCards.length > 0) {
+      return vectorCards;
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.warn("[aicoco] RAG retrieval failed:", message);
-    return [];
   }
+
+  // 向量召回失败或为空时，用关键词兜底匹配，避免线上 API key 缺失导致完全答不上来。
+  return retrieveCardsByKeywords(userQuestion);
+}
+
+const KEYWORD_STOP_WORDS = new Set([
+  "的", "了", "我", "你", "是", "什么", "怎么", "吗", "呢", "吧", "啊",
+  "和", "或", "与", "在", "有", "得", "地", "着", "过", "给", "让",
+  "对", "到", "从", "把", "被", "向", "为", "因", "而", "却", "又",
+  "也", "很", "都", "还", "就", "只", "最", "太", "非常", "比较",
+  "适合", "推荐", "选", "颜色", "口", "红", "一个", "可以", "告诉",
+]);
+
+function extractTerms(text: string): string[] {
+  const terms = new Set<string>();
+  const chars = text.split("");
+  for (let len = 2; len <= 4 && len <= chars.length; len++) {
+    for (let i = 0; i <= chars.length - len; i++) {
+      const term = chars.slice(i, i + len).join("");
+      if (!KEYWORD_STOP_WORDS.has(term)) {
+        terms.add(term);
+      }
+    }
+  }
+  return Array.from(terms);
+}
+
+function retrieveCardsByKeywords(userQuestion: string): QACard[] {
+  const cards = loadQACards();
+  const q = userQuestion.toLowerCase();
+  const scored = cards.map((card) => {
+    const terms = extractTerms(card.question.toLowerCase());
+    let score = 0;
+    for (const term of terms) {
+      if (q.includes(term)) {
+        score += term.length;
+      }
+    }
+    return { card, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  if (scored.length > 0 && scored[0].score >= 3) {
+    return [scored[0].card];
+  }
+  return [];
 }
 
 const COCO_MOCK_RESPONSES: Record<string, string> = {
