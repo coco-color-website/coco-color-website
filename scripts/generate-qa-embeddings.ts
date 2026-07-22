@@ -1,6 +1,12 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import qaCards from "../data/qa-cards.json" with { type: "json" };
 import { getEmbeddings, getEmbeddingConfig } from "../lib/embedding.js";
 import { upsertQACards } from "../lib/qa-db.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(__dirname, "..");
 
 interface QACard {
   id: string;
@@ -34,9 +40,18 @@ async function main() {
   const texts = cards.map(buildRetrievalText);
   const embeddings = await getEmbeddings(texts);
 
+  // 本地开发保留 SQLite 向量库。
   await upsertQACards(cards, embeddings);
-
   console.log(`已写入 ${cards.length} 张 QA 卡片到 SQLite 向量库`);
+
+  // 线上 Edge Runtime 通过 JSON 文件加载 embedding，避免 SQLite 依赖。
+  const embeddingsJson = cards.map((card, i) => ({
+    id: card.id,
+    embedding: embeddings[i],
+  }));
+  const jsonPath = path.join(projectRoot, "data", "qa-embeddings.json");
+  fs.writeFileSync(jsonPath, JSON.stringify(embeddingsJson, null, 2));
+  console.log(`已写入 ${cards.length} 张 QA 卡片 embedding 到 ${jsonPath}`);
 }
 
 main().catch((err) => {

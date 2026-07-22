@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { loadQACards } from "@/lib/qa-cards";
 import { getEmbeddingConfig } from "@/lib/rag";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export async function POST(request: Request) {
   try {

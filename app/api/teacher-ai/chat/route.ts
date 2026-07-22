@@ -9,7 +9,7 @@ import {
   StreamChunk,
 } from "@/lib/teacher-ai";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export async function POST(request: Request) {
   let body: { messages?: ChatMessage[]; teacherName?: string } = {};

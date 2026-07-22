@@ -1,7 +1,7 @@
 import type { QACard } from "./qa-cards";
 import { loadQACards } from "./qa-cards";
 import { getEmbedding, getEmbeddingConfig } from "./embedding";
-import { loadQACardsWithEmbeddings } from "./qa-db";
+import qaEmbeddingsJson from "@/data/qa-embeddings.json";
 
 export interface EmbeddingConfig {
   apiBase: string;
@@ -17,6 +17,16 @@ export interface RetrievalOptions {
 
 export interface RetrievedCard extends QACard {
   similarity: number;
+}
+
+interface EmbeddingRecord {
+  id: string;
+  embedding: number[];
+}
+
+const embeddingsById: Record<string, number[]> = {};
+for (const record of qaEmbeddingsJson as EmbeddingRecord[]) {
+  embeddingsById[record.id] = record.embedding;
 }
 
 /**
@@ -43,20 +53,26 @@ function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 /**
- * 用用户问题的向量，在 SQLite 中的 QA 卡片向量做余弦相似度召回。
+ * 用用户问题的向量，在 QA 卡片向量中做余弦相似度召回。
+ * 线上 Edge Runtime 直接读取 data/qa-embeddings.json，不依赖 SQLite。
  */
 export async function searchSimilarCards(
   queryEmbedding: number[],
   options: RetrievalOptions = {}
 ): Promise<RetrievedCard[]> {
   const { limit = 3, threshold = 0.5 } = options;
-  const cards = await loadQACardsWithEmbeddings();
+  const cards = loadQACards();
 
   const scored = cards
-    .map((card) => ({
-      ...card,
-      similarity: cosineSimilarity(queryEmbedding, card.embedding),
-    }))
+    .map((card) => {
+      const embedding = embeddingsById[card.id];
+      if (!embedding) return null;
+      return {
+        ...card,
+        similarity: cosineSimilarity(queryEmbedding, embedding),
+      };
+    })
+    .filter((card): card is RetrievedCard => card !== null)
     .filter((card) => card.similarity >= threshold)
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, limit);
@@ -86,35 +102,6 @@ export async function retrieveCardsForQuestion(
 
   const queryEmbedding = await getEmbedding(question);
   return searchSimilarCards(queryEmbedding, options);
-}
-
-/**
- * 把 QA 卡片写入/更新到 SQLite 向量库。
- */
-export async function upsertQACards(cards?: QACard[]): Promise<void> {
-  const targetCards = cards ?? loadQACards();
-  const { getEmbeddings } = await import("./embedding");
-  const texts = targetCards.map(buildRetrievalText);
-  const embeddings = await getEmbeddings(texts);
-  await upsertQACardsToDb(targetCards, embeddings);
-  console.log(`[rag] 已写入 ${targetCards.length} 张 QA 卡片到 SQLite 向量库`);
-}
-
-function buildRetrievalText(card: QACard): string {
-  return [
-    `分类：${card.category}`,
-    `问题：${card.question}`,
-    "回答要点：",
-    ...card.answer_points,
-  ].join("\n");
-}
-
-async function upsertQACardsToDb(
-  cards: QACard[],
-  embeddings: number[][]
-): Promise<void> {
-  const { upsertQACards: dbUpsert } = await import("./qa-db");
-  await dbUpsert(cards, embeddings);
 }
 
 export { getEmbedding, getEmbeddingConfig };
