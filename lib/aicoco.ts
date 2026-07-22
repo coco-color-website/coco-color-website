@@ -308,8 +308,7 @@ function getKnowledgeMockResponse(
       q.includes("哪家好") ||
       (q.includes("哪家") && (q.includes("化妆") || q.includes("诊断"))) ||
       (q.includes("推荐") &&
-        (q.includes("人") ||
-          q.includes("账号") ||
+        (q.includes("账号") ||
           q.includes("机构") ||
           q.includes("店") ||
           q.includes("化妆室") ||
