@@ -145,7 +145,9 @@ export default async function Home() {
         <section id="teacher" className="py-20">
           <SectionTitle en="Stylists" zh="诊断老师" />
           <div className="mt-12 space-y-16">
-            {content.teachers.map((teacher) => (
+            {content.teachers
+              .filter((teacher) => teacher.name !== "乐飞")
+              .map((teacher) => (
               <div
                 key={teacher.name}
                 className="grid items-start gap-10 md:grid-cols-2"
@@ -251,40 +253,6 @@ export default async function Home() {
                     </p>
                     <p className="mt-3 text-lg font-semibold text-[var(--pink-deep)]">
                       ¥{s.price.COCO}
-                    </p>
-                  </div>
-                ))}
-            </div>
-          </div>
-
-          {/* S级诊断师 乐飞 */}
-          <div className="mx-auto mt-14 max-w-2xl">
-            <h3 className="text-center text-lg font-semibold text-[var(--foreground)]">
-              S级诊断师 乐飞
-            </h3>
-            <p className="mt-2 text-center text-xs text-[var(--foreground)]/50">
-              ↕ 区域内上下滑动查看全部项目
-            </p>
-            <div className="mt-4 h-[360px] snap-y snap-mandatory space-y-5 overflow-y-auto rounded-3xl pr-2">
-              {content.services
-                .filter((s) => s.price.乐飞)
-                .map((s, i) => (
-                  <div
-                    key={s.en}
-                    className={`snap-start rounded-3xl p-8 shadow-sm ${
-                      i % 2 === 0
-                        ? "bg-white/70 ring-1 ring-[var(--pink-soft)]"
-                        : "bg-gradient-to-br from-[var(--pink-soft)] to-white ring-1 ring-[var(--pink)]"
-                    }`}
-                  >
-                    <p className="serif text-xl text-[var(--pink-deep)]">{s.en}</p>
-                    <p className="mt-1 text-lg font-semibold">{s.zh}</p>
-                    <p className="mt-3 text-sm text-[var(--foreground)]/70">{s.desc}</p>
-                    <p className="mt-2 text-xs text-[var(--foreground)]/60">
-                      时长：{s.duration}
-                    </p>
-                    <p className="mt-3 text-lg font-semibold text-[var(--pink-deep)]">
-                      ¥{s.price.乐飞}
                     </p>
                   </div>
                 ))}
@@ -439,7 +407,7 @@ export default async function Home() {
               营业时间：11:00 - 18:00
             </p>
             <a
-              href="https://map.baidu.com/search/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%A4%A9%E6%B2%B3%E5%8C%BA%E5%8D%8E%E5%BC%BA%E8%B7%AF2%E5%8F%B7%E5%AF%8C%E5%8A%9B%E7%9B%88%E4%B8%B0%E5%A4%A7%E5%8E%A6A%E5%BA%203%E6%A5%BC336%E5%AE%A4"
+              href="https://map.baidu.com/search/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%A4%A9%E6%B2%B3%E5%8C%BA%E5%8D%8E%E5%BC%BA%E8%B7%AF2%E5%8F%B7%E5%AF%8C%E5%8A%9B%E7%9B%88%E4%B8%B0%E5%A4%A7%E5%8E%A6A%E5%BA%A7%203%E6%A5%BC336%E5%AE%A4"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 inline-block rounded-full bg-[var(--pink-deep)] px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
