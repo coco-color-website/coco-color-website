@@ -4,7 +4,6 @@ import { getContent } from "@/lib/content";
 const navItems = [
   { href: "#brand", label: "品牌介绍" },
   { href: "#teacher", label: "诊断老师" },
-  { href: "#projects", label: "诊断项目" },
   { href: "#details", label: "诊断明细" },
   { href: "/studio", label: "诊断环境" },
   { href: "/coco", label: "主理人介绍" },
@@ -92,10 +91,10 @@ export default async function Home() {
             {content.brand.heroText}
           </p>
           <a
-            href="#projects"
+            href="#details"
             className="mt-9 rounded-full bg-[var(--pink-deep)] px-8 py-3 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
           >
-            了解诊断项目
+            了解诊断明细
           </a>
         </div>
       </section>
@@ -218,45 +217,6 @@ export default async function Home() {
                 </div>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* 诊断项目 */}
-        <section id="projects" className="py-20">
-          <SectionTitle en="Service" zh="诊断项目" />
-
-          {/* COCO 主理人 */}
-          <div className="mx-auto mt-10 max-w-2xl">
-            <h3 className="text-center text-lg font-semibold text-[var(--foreground)]">
-              COCO 主理人
-            </h3>
-            <p className="mt-2 text-center text-xs text-[var(--foreground)]/50">
-              ↕ 区域内上下滑动查看全部项目
-            </p>
-            <div className="mt-4 h-[360px] snap-y snap-mandatory space-y-5 overflow-y-auto rounded-3xl pr-2">
-              {content.services
-                .filter((s) => s.price.COCO)
-                .map((s, i) => (
-                  <div
-                    key={s.en}
-                    className={`snap-start rounded-3xl p-8 shadow-sm ${
-                      i % 2 === 0
-                        ? "bg-white/70 ring-1 ring-[var(--pink-soft)]"
-                        : "bg-gradient-to-br from-[var(--pink-soft)] to-white ring-1 ring-[var(--pink)]"
-                    }`}
-                  >
-                    <p className="serif text-xl text-[var(--pink-deep)]">{s.en}</p>
-                    <p className="mt-1 text-lg font-semibold">{s.zh}</p>
-                    <p className="mt-3 text-sm text-[var(--foreground)]/70">{s.desc}</p>
-                    <p className="mt-2 text-xs text-[var(--foreground)]/60">
-                      时长：{s.duration}
-                    </p>
-                    <p className="mt-3 text-lg font-semibold text-[var(--pink-deep)]">
-                      ¥{s.price.COCO}
-                    </p>
-                  </div>
-                ))}
-            </div>
           </div>
         </section>
 
