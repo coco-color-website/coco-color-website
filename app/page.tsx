@@ -225,11 +225,7 @@ export default async function Home() {
         <section id="projects" className="py-20">
           <SectionTitle en="Service" zh="诊断项目" />
 
-          {/* COCO 主理人 */}
           <div className="mx-auto mt-10 max-w-2xl">
-            <h3 className="text-center text-lg font-semibold text-[var(--foreground)]">
-              COCO 主理人
-            </h3>
             <p className="mt-2 text-center text-xs text-[var(--foreground)]/50">
               ↕ 区域内上下滑动查看全部项目
             </p>
