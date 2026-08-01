@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { callLLM, logChat, ChatMessage, retrieveCocoCardsForAicoco } from "@/lib/aicoco";
+import { verifyCocoToken, CocoAuthError } from "@/lib/coco-auth";
 
 export const runtime = "edge";
 
 export async function POST(request: Request) {
-  let body: { messages?: ChatMessage[]; persona?: string } = {};
+  let body: { messages?: ChatMessage[]; persona?: string; accessToken?: string } = {};
 
   try {
     body = await request.json();
@@ -18,9 +19,27 @@ export async function POST(request: Request) {
       );
     }
 
-    // COCO 主理人分身启用 QA 卡片 RAG。
+    // COCO 主理人分身启用 QA 卡片 RAG，同时需要校验访问 token。
     let retrievedCards: Awaited<ReturnType<typeof retrieveCocoCardsForAicoco>> = [];
     if (persona === "coco") {
+      const accessToken = body.accessToken;
+      if (!accessToken) {
+        return NextResponse.json(
+          { error: "请先登录 COCO 主理人分身" },
+          { status: 401 }
+        );
+      }
+
+      try {
+        await verifyCocoToken(accessToken);
+      } catch (authErr) {
+        const authMessage =
+          authErr instanceof CocoAuthError
+            ? authErr.message
+            : "登录已失效，请重新输入访问码";
+        return NextResponse.json({ error: authMessage }, { status: 401 });
+      }
+
       const lastUserQuestion =
         messages.filter((m) => m.role === "user").pop()?.content || "";
       retrievedCards = await retrieveCocoCardsForAicoco(lastUserQuestion);
