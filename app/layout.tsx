@@ -7,7 +7,21 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aicococolor.com";
+function getSafeSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!raw) return "https://aicococolor.com";
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return "https://aicococolor.com";
+    }
+    return raw;
+  } catch {
+    return "https://aicococolor.com";
+  }
+}
+
+const siteUrl = getSafeSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

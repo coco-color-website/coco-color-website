@@ -28,7 +28,7 @@ const PERSONA_CONFIG = {
     name: "COCO 主理人",
     avatar: (
       <img
-        src="/coco.jpg"
+        src="/coco-white.jpg"
         alt="COCO"
         className="h-8 w-8 shrink-0 rounded-full object-cover ring-2 ring-[var(--pink-soft)]"
       />
