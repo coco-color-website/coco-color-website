@@ -9,6 +9,8 @@ interface Message {
 
 interface AicocoChatProps {
   persona?: "aicoco" | "coco";
+  accessToken?: string;
+  onAuthExpired?: () => void;
 }
 
 const PERSONA_CONFIG = {
@@ -36,7 +38,11 @@ const PERSONA_CONFIG = {
   },
 };
 
-export default function AicocoChat({ persona = "aicoco" }: AicocoChatProps) {
+export default function AicocoChat({
+  persona = "aicoco",
+  accessToken,
+  onAuthExpired,
+}: AicocoChatProps) {
   const config = PERSONA_CONFIG[persona];
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: config.intro },
@@ -67,10 +73,14 @@ export default function AicocoChat({ persona = "aicoco" }: AicocoChatProps) {
         body: JSON.stringify({
           messages: nextMessages,
           persona,
+          accessToken,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
+        if ((res.status === 401 || res.status === 403) && onAuthExpired) {
+          onAuthExpired();
+        }
         throw new Error(data.error || "请求失败");
       }
       setMessages((prev) => [
